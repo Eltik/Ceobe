@@ -6,7 +6,8 @@ export default {
     options: [],
     execute: async (interaction: Interaction) => {
         if (interaction.isCommand()) {
-            await interaction.reply("Pong!");
+            const responses = ["Dadadada!", "Gooooooo!", "Haah!", "Prey should stay still!"]
+            await interaction.reply(responses[Math.floor(Math.random() * responses.length)]);
         } else {
             return;
         }

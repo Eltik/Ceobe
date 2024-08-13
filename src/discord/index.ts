@@ -6,8 +6,8 @@ export const client = new Client({
     shards: "auto",
     intents: [GatewayIntentBits.GuildMembers, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildVoiceStates, GatewayIntentBits.GuildMessageReactions],
     presence: {
-        status: "dnd",
-        activities: [{ name: "Ranked Bridge" }],
+        status: "online",
+        activities: [{ name: "Dadadada!" }],
     },
 });
 

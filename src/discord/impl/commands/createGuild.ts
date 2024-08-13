@@ -20,6 +20,7 @@ export default {
             required: true,
         },
     ],
+    defaultMemberPermissions: ["UseApplicationCommands", "ManageChannels"],
     execute: async (interaction: Interaction) => {
         if (interaction.isCommand()) {
             await interaction.deferReply({ ephemeral: true });

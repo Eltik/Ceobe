@@ -54,6 +54,7 @@ export default {
                     .setImage(imageURL)
                     .setFooter({ text: "Submitted by: " + interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
                     .setTimestamp();
+
             const channel = await interaction.client.channels.cache.get(guild.submissions_channel_id);
             if (!channel) {
                 const channel = await interaction.guild!.channels.fetch(guild.submissions_channel_id);
@@ -67,6 +68,8 @@ export default {
             } else {
                 return interaction.editReply("Daily challenge channel is not a text channel. Run `/create-guild` again to edit the channel.");
             }
+
+            console.log(`Submission sent by ${interaction.user.username} in guild ${guild.guild_id}.`);
 
             await interaction.deferReply({ ephemeral: true });
             await interaction.editReply("Submission has been sent.");
