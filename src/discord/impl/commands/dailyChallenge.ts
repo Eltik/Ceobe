@@ -1,4 +1,4 @@
-import { ApplicationCommandDataResolvable, ApplicationCommandOptionType, EmbedBuilder, Interaction } from "discord.js";
+import { ActionRowBuilder, ApplicationCommandDataResolvable, ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, EmbedBuilder, Interaction } from "discord.js";
 import { getGuild } from "../../../database/impl/guilds/impl/get";
 import { fetchStages } from "../../../lib/impl/stages";
 import { createChallenge } from "../../../database/impl/challenges/impl/create";
@@ -67,16 +67,24 @@ export default {
                     .setFooter({ text: "Submitted by: " + interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
                     .setTimestamp();
 
+                const submit = new ButtonBuilder()
+                    .setCustomId(`submission:${id}`)
+                    .setLabel("Submit Your Clear")
+                    .setStyle(ButtonStyle.Success);
+
+                const actionBuilder = new ActionRowBuilder()
+                    .addComponents(submit);
+
                 const channel = await interaction.client.channels.cache.get(guild.daily_channel_id);
                 if (!channel) {
                     const channel = await interaction.guild!.channels.fetch(guild.daily_channel_id);
                     if (!channel?.isTextBased()) {
                         return interaction.editReply("Daily challenge channel is not a text channel.");
                     } else {
-                        channel?.send({ embeds: [embed] });
+                        channel?.send({ embeds: [embed], components: [actionBuilder as ActionRowBuilder<any>] });
                     }
                 } else if (channel?.isTextBased()) {
-                    channel.send({ embeds: [embed] });
+                    channel.send({ embeds: [embed], components: [actionBuilder as ActionRowBuilder<any>] });
                 } else {
                     return interaction.editReply("Daily challenge channel is not a text channel. Run `/create-guild` again to edit the channel.");
                 }

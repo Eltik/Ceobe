@@ -12,6 +12,8 @@ export const client = new Client({
 });
 
 export const commands = [await import("./impl/commands/ping"), await import("./impl/commands/createGuild"), await import("./impl/commands/dailyChallenge")];
+export const buttons = [await import("./impl/buttons/submit")];
+export const modals = [await import("./impl/modals/submit")];
 export const events = [await import("./impl/events/ready"), await import("./impl/events/interactionCreate"), await import("./impl/events/voiceStateUpdate")];
 
 export const init = async () => {
