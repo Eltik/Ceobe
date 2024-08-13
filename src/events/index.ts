@@ -8,6 +8,7 @@ export enum Events {
     DATABASE_PLAYER_CREATE = "database.player.create",
     DATABASE_GUILD_CREATE = "database.guild.create",
     DATABASE_GUILD_EDIT = "database.guild.edit",
+    DATABASE_CHALLENGES_CREATE = "database.challenges.create",
 }
 
 const emitter = new EventEmitter2({});

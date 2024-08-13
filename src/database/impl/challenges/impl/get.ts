@@ -1,18 +1,20 @@
 import { QueryConfig } from "pg";
 import { postgres } from "../../..";
-import { Guild } from "../../../../types";
+import { Challenge } from "../../../../types";
 
-export const getGuild = async (guildId: string): Promise<Guild | undefined> => {
+export const getChallenge = async (guildId: string, id: string): Promise<Challenge | undefined> => {
     const query: QueryConfig = {
         text: `
             SELECT
                 *
             FROM
-                guilds
+                challenges
             WHERE
                 guild_id = $1
+            AND
+                id = $2
         `,
-        values: [guildId],
+        values: [guildId, id],
     };
 
     const result = await postgres.query(query);

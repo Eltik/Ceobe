@@ -18,6 +18,10 @@ export const listener = async () => {
         console.log(colors.gray(`Edited guild for guild ${data.guildId} with daily channel ID ${data.dailyChannelId}, submissions channel ID ${data.submissionsChannelId}, and moderator role ID ${data.moderatorRole}`));
     });
 
+    emitter.on(Events.DATABASE_CHALLENGES_CREATE, async (data) => {
+        console.log(colors.gray(`Created challenge for guild ${data.guildId} with challenge ID ${data.id}`));
+    });
+
     emitter.on(Events.DATABASE_PLAYER_CREATE, async (data) => {
         console.log(colors.gray(`Created user for guild ${data.guildId} with user ID ${data.userId}`));
     });
