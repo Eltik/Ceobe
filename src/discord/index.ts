@@ -31,7 +31,11 @@ export const registerCommands = async () => {
     for (const command of commands) {
         await client.application?.commands.set([command.default]);
 
-        const slashCommand = new SlashCommandBuilder().setName((command.default as { name: string }).name).setDescription((command.default as { description: string }).description);
+        const slashCommand =
+            new SlashCommandBuilder()
+                .setName((command.default as { name: string }).name)
+                .setDescription((command.default as { description: string }).description)
+                .setDefaultMemberPermissions((command.default as { defaultMemberPermissions: string }).defaultMemberPermissions);
 
         if (
             (

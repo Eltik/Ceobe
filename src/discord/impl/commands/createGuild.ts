@@ -1,4 +1,4 @@
-import { ApplicationCommandDataResolvable, ApplicationCommandOptionType, Interaction } from "discord.js";
+import { ApplicationCommandDataResolvable, ApplicationCommandOptionType, Interaction, PermissionFlagsBits } from "discord.js";
 import { createGuild } from "../../../database/impl/guilds/impl/create";
 import { getGuild } from "../../../database/impl/guilds/impl/get";
 import { editGuild } from "../../../database/impl/guilds/impl/edit";
@@ -20,7 +20,7 @@ export default {
             required: true,
         },
     ],
-    defaultMemberPermissions: ["UseApplicationCommands", "ManageChannels"],
+    defaultMemberPermissions: PermissionFlagsBits.ManageRoles,
     execute: async (interaction: Interaction) => {
         if (interaction.isCommand()) {
             await interaction.deferReply({ ephemeral: true });

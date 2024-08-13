@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ApplicationCommandDataResolvable, ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, EmbedBuilder, Interaction } from "discord.js";
+import { ActionRowBuilder, ApplicationCommandDataResolvable, ApplicationCommandOptionType, ButtonBuilder, ButtonStyle, EmbedBuilder, Interaction, PermissionFlagsBits } from "discord.js";
 import { getGuild } from "../../../database/impl/guilds/impl/get";
 import { fetchStages } from "../../../lib/impl/stages";
 import { createChallenge } from "../../../database/impl/challenges/impl/create";
@@ -28,7 +28,7 @@ export default {
             required: true,
         },
     ],
-    defaultMemberPermissions: ["UseApplicationCommands", "ManageChannels"],
+    defaultMemberPermissions: PermissionFlagsBits.ManageRoles,
     execute: async (interaction: Interaction) => {
         if (interaction.isCommand()) {
             await interaction.deferReply({ ephemeral: true });
