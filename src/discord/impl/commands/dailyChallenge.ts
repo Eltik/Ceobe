@@ -68,13 +68,9 @@ export default {
                     .setFooter({ text: "Submitted by: " + interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
                     .setTimestamp();
 
-                const submit = new ButtonBuilder()
-                    .setCustomId(`submission:${id}`)
-                    .setLabel("Submit Your Clear")
-                    .setStyle(ButtonStyle.Success);
+                const submit = new ButtonBuilder().setCustomId(`submission:${id}`).setLabel("Submit Your Clear").setStyle(ButtonStyle.Success);
 
-                const actionBuilder = new ActionRowBuilder()
-                    .addComponents(submit);
+                const actionBuilder = new ActionRowBuilder().addComponents(submit);
 
                 const channel = await interaction.client.channels.cache.get(guild.daily_channel_id);
                 if (!channel) {

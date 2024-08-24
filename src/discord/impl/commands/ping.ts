@@ -7,7 +7,7 @@ export default {
     defaultMemberPermissions: PermissionFlagsBits.SendMessages,
     execute: async (interaction: Interaction) => {
         if (interaction.isCommand()) {
-            const responses = ["Dadadada!", "Gooooooo!", "Haah!", "Prey should stay still!"]
+            const responses = ["Dadadada!", "Gooooooo!", "Haah!", "Prey should stay still!"];
             await interaction.reply(responses[Math.floor(Math.random() * responses.length)]);
         } else {
             return;

@@ -9,7 +9,7 @@ export default {
             const buttonId = id.split("submit-")[1];
 
             const title = interaction.fields.getTextInputValue(`submit-${buttonId}-title`);
-	        const description = interaction.fields.getTextInputValue(`submit-${buttonId}-description`);
+            const description = interaction.fields.getTextInputValue(`submit-${buttonId}-description`);
             const imageURL = interaction.fields.getTextInputValue(`submit-${buttonId}-image`);
 
             if (!title) {
@@ -45,15 +45,13 @@ export default {
                 return;
             }
 
-            const embed = 
-                new EmbedBuilder()
-                    .setColor(0x0099ff)
-                    .setTitle(title)
-                    .setAuthor({ name: "Daily Challenge", iconURL: "https://raw.githubusercontent.com/Aceship/Arknight-Images/main/avatars/char_2013_cerber_whirlwind%232.png", url: "https://aceship.github.io/AN-EN-Tags/akhrchars.html?opname=Ceobe" })
-                    .setDescription(description)
-                    .setImage(imageURL)
-                    .setFooter({ text: "Submitted by: " + interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
-                    .setTimestamp();
+            const embed = new EmbedBuilder()
+                .setColor(0x0099ff)
+                .setTitle(title)
+                .setAuthor({ name: "Daily Challenge", iconURL: "https://raw.githubusercontent.com/Aceship/Arknight-Images/main/avatars/char_2013_cerber_whirlwind%232.png", url: "https://aceship.github.io/AN-EN-Tags/akhrchars.html?opname=Ceobe" })
+                .setDescription(description)
+                .setFooter({ text: "Submitted by: " + interaction.user.username, iconURL: interaction.user.displayAvatarURL() })
+                .setTimestamp();
 
             const channel = await interaction.client.channels.cache.get(guild.submissions_channel_id);
             if (!channel) {
@@ -61,10 +59,10 @@ export default {
                 if (!channel?.isTextBased()) {
                     return interaction.editReply("Daily challenge channel is not a text channel.");
                 } else {
-                    channel?.send({ embeds: [embed] });
+                    channel?.send({ embeds: [embed], content: imageURL });
                 }
             } else if (channel?.isTextBased()) {
-                channel.send({ embeds: [embed] });
+                channel.send({ embeds: [embed], content: imageURL });
             } else {
                 return interaction.editReply("Daily challenge channel is not a text channel. Run `/create-guild` again to edit the channel.");
             }
@@ -74,5 +72,5 @@ export default {
             await interaction.deferReply({ ephemeral: true });
             await interaction.editReply("Submission has been sent.");
         }
-    }
+    },
 };

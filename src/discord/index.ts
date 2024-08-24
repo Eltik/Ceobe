@@ -11,7 +11,7 @@ export const client = new Client({
     },
 });
 
-export const commands = [await import("./impl/commands/ping"), await import("./impl/commands/createGuild"), await import("./impl/commands/dailyChallenge")];
+export const commands = [await import("./impl/commands/ping"), await import("./impl/commands/createGuild"), await import("./impl/commands/dailyChallenge"), await import("./impl/commands/currentChallenge"), await import("./impl/commands/submitChallenge")];
 export const buttons = [await import("./impl/buttons/submit")];
 export const modals = [await import("./impl/modals/submit")];
 export const events = [await import("./impl/events/ready"), await import("./impl/events/interactionCreate"), await import("./impl/events/voiceStateUpdate")];
@@ -31,11 +31,10 @@ export const registerCommands = async () => {
     for (const command of commands) {
         await client.application?.commands.set([command.default]);
 
-        const slashCommand =
-            new SlashCommandBuilder()
-                .setName((command.default as { name: string }).name)
-                .setDescription((command.default as { description: string }).description)
-                .setDefaultMemberPermissions((command.default as { defaultMemberPermissions: string }).defaultMemberPermissions);
+        const slashCommand = new SlashCommandBuilder()
+            .setName((command.default as { name: string }).name)
+            .setDescription((command.default as { description: string }).description)
+            .setDefaultMemberPermissions((command.default as { defaultMemberPermissions: string }).defaultMemberPermissions);
 
         if (
             (
@@ -46,7 +45,7 @@ export const registerCommands = async () => {
         ) {
             for (const option of (
                 command.default as {
-                    options: { name: string; description: string; type: ApplicationCommandOptionType; autocomplete?: boolean; required?: boolean }[];
+                    options: { name: string; description: string; type: ApplicationCommandOptionType; autocomplete?: boolean; required?: boolean; choices?: any }[];
                 }
             ).options) {
                 switch (option.type) {
@@ -56,6 +55,7 @@ export const registerCommands = async () => {
                                 .setName(option.name)
                                 .setDescription(option.description)
                                 .setAutocomplete(option.autocomplete || false)
+                                .setChoices(option.choices || [])
                                 .setRequired(option.required || false),
                         );
                         break;
@@ -67,12 +67,67 @@ export const registerCommands = async () => {
                                 .setRequired(option.required || false),
                         );
                         break;
+                    case ApplicationCommandOptionType.Attachment:
+                        slashCommand.addAttachmentOption((opt) =>
+                            opt
+                                .setName(option.name)
+                                .setDescription(option.description)
+                                .setRequired(option.required || false),
+                        );
+                        break;
+                    case ApplicationCommandOptionType.Boolean:
+                        slashCommand.addBooleanOption((opt) =>
+                            opt
+                                .setName(option.name)
+                                .setDescription(option.description)
+                                .setRequired(option.required || false),
+                        );
+                        break;
+                    case ApplicationCommandOptionType.Integer:
+                        slashCommand.addIntegerOption((opt) =>
+                            opt
+                                .setName(option.name)
+                                .setDescription(option.description)
+                                .setRequired(option.required || false),
+                        );
+                        break;
+                    case ApplicationCommandOptionType.Mentionable:
+                        slashCommand.addMentionableOption((opt) =>
+                            opt
+                                .setName(option.name)
+                                .setDescription(option.description)
+                                .setRequired(option.required || false),
+                        );
+                        break;
+                    case ApplicationCommandOptionType.Number:
+                        slashCommand.addNumberOption((opt) =>
+                            opt
+                                .setName(option.name)
+                                .setDescription(option.description)
+                                .setRequired(option.required || false),
+                        );
+                        break;
+                    case ApplicationCommandOptionType.Role:
+                        slashCommand.addRoleOption((opt) =>
+                            opt
+                                .setName(option.name)
+                                .setDescription(option.description)
+                                .setRequired(option.required || false),
+                        );
+                        break;
+                    case ApplicationCommandOptionType.User:
+                        slashCommand.addUserOption((opt) =>
+                            opt
+                                .setName(option.name)
+                                .setDescription(option.description)
+                                .setRequired(option.required || false),
+                        );
+                        break;
                 }
             }
         }
 
         commandList.push(slashCommand);
-
         await emitter.emit(Events.DISCORD_COMMAND_REGISTER, command.default);
     }
 
