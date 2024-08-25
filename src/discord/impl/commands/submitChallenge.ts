@@ -24,7 +24,7 @@ export default {
             required: true,
         },
     ],
-    defaultMemberPermissions: PermissionFlagsBits.ManageRoles,
+    defaultMemberPermissions: PermissionFlagsBits.ViewChannel,
     execute: async (interaction: Interaction) => {
         if (interaction.isCommand()) {
             await interaction.deferReply({ ephemeral: true });
@@ -103,7 +103,6 @@ export default {
 
                 console.log(`Submission sent by ${interaction.user.username} in guild ${guild.guild_id}.`);
 
-                await interaction.deferReply({ ephemeral: true });
                 await interaction.editReply("Submission has been sent.");
             } catch (e) {
                 console.error(e);

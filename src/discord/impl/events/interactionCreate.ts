@@ -31,23 +31,23 @@ export default {
             const id = interaction.customId;
 
             for (const button of buttons) {
-                if (id.startsWith((button.default as { id: string }).id)) {
-                    await (button.default as any).execute(interaction);
-                    break;
-                } else {
+                if ((button.default as { id: string }).id.startsWith(id)) {
                     continue;
                 }
+
+                await (button.default as any).execute(interaction);
+                break;
             }
         } else if (interaction.isModalSubmit()) {
             const id = interaction.customId;
 
             for (const modal of modals) {
-                if (id.startsWith((modal.default as { id: string }).id)) {
-                    await (modal.default as any).execute(interaction);
-                    break;
+                if ((modal.default as { id: string }).id.startsWith(id)) {
+                    continue;
                 }
 
-                continue;
+                await (modal.default as any).execute(interaction);
+                break;
             }
         } else {
             console.log("uh oh");
