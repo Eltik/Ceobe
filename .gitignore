@@ -170,4 +170,6 @@ dist
 
 .DS_Store
 bun.lockb
-stage_table.json
+tsconfig.tsbuildinfo
+database.json
+test.ts

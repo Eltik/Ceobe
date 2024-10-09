@@ -4,4 +4,5 @@ export const env = {
     CLIENT_TOKEN: process.env.CLIENT_TOKEN ?? "my-secret",
     GUILD_ID: process.env.GUILD_ID ?? "1234567890",
     USE_GUILD_COMMANDS: process.env.USE_GUILD_COMMANDS?.toLowerCase() === "true",
+    PREFIX: process.env.PREFIX ?? "ceobe",
 };

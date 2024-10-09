@@ -10,20 +10,32 @@ export const listener = async () => {
         console.log(colors.green("Initiated database!"));
     });
 
-    emitter.on(Events.DATABASE_GUILD_CREATE, async (data) => {
-        console.log(colors.gray(`Created guild for guild ${data.guildId} with daily channel ID ${data.dailyChannelId}, submissions channel ID ${data.submissionsChannelId}, and moderator role ID ${data.moderatorRole}`));
+    emitter.on(Events.DATABASE_TABLE_CREATE, async (data) => {
+        console.log(colors.gray(`Table created: ${data}`));
     });
 
-    emitter.on(Events.DATABASE_GUILD_EDIT, async (data) => {
-        console.log(colors.gray(`Edited guild for guild ${data.guildId} with daily channel ID ${data.dailyChannelId}, submissions channel ID ${data.submissionsChannelId}, and moderator role ID ${data.moderatorRole}`));
+    emitter.on(Events.DATABASE_GUILDS_CREATE, async (data) => {
+        console.log(colors.gray(`Guild created: ${data?.guild_id}`));
     });
 
-    emitter.on(Events.DATABASE_CHALLENGES_CREATE, async (data) => {
-        console.log(colors.gray(`Created challenge for guild ${data.guildId} with challenge ID ${data.id}`));
+    emitter.on(Events.DATABASE_GUILDS_UPDATE, async (data) => {
+        console.log(colors.gray(`Guild updated: ${data?.guild_id}`));
     });
 
-    emitter.on(Events.DATABASE_PLAYER_CREATE, async (data) => {
-        console.log(colors.gray(`Created user for guild ${data.guildId} with user ID ${data.userId}`));
+    emitter.on(Events.DATABASE_GUILDS_DELETE, async (data) => {
+        console.log(colors.gray(`Guild deleted: ${data?.guild_id}`));
+    });
+
+    emitter.on(Events.DATABASE_USERS_CREATE, async (data) => {
+        console.log(colors.gray(`User created: ${data?.user_id}`));
+    });
+
+    emitter.on(Events.DATABASE_USERS_UPDATE, async (data) => {
+        console.log(colors.gray(`User updated: ${data?.user_id}`));
+    });
+
+    emitter.on(Events.DATABASE_USERS_DELETE, async (data) => {
+        console.log(colors.gray(`User deleted: ${data?.user_id}`));
     });
 
     emitter.on(Events.DISCORD_READY, async () => {
