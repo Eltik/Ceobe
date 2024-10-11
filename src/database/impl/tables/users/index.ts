@@ -24,14 +24,14 @@ export const table: Schema = {
             notNull: true,
         },
     },
-    points: {
+    level: {
         type: "INTEGER",
         options: {
             notNull: true,
-            default: 0,
+            default: 1,
         },
     },
-    level: {
+    exp: {
         type: "INTEGER",
         options: {
             notNull: true,

@@ -12,9 +12,9 @@ export default {
             const commands = readdirSync(join(import.meta.dir, "../commands")).filter((file) => file.endsWith(".ts") || file.endsWith(".js"));
 
             for (const file of commands) {
-                const command = await import(`../../commands/${file}`);
+                const command = await import(join(import.meta.dir, `../commands/${file}`));
 
-                if (command.default.name !== commandName) {
+                if (command.default.data.name !== commandName) {
                     continue;
                 }
 
@@ -27,7 +27,7 @@ export default {
             const commands = readdirSync(join(import.meta.dir, "../commands")).filter((file) => file.endsWith(".ts") || file.endsWith(".js"));
 
             for (const file of commands) {
-                const command = await import(`../../commands/${file}`);
+                const command = await import(join(import.meta.dir, `../commands/${file}`));
                 if (command.default.name !== name) {
                     continue;
                 }

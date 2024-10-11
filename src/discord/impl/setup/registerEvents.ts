@@ -6,13 +6,13 @@ export const registerEvents = async () => {
     const events = readdirSync(join(import.meta.dir, "../events")).filter((file) => file.endsWith(".ts") || file.endsWith(".js"));
 
     for (const file of events) {
-        const event = await import(`../../events/${file}`);
+        const event = await import(join(import.meta.dir, "../events", file));
 
         if (event.default.once) {
-            client.once(event.default.name, (...args) => event.default.execute(client, ...args));
+            client.once(event.default.name, event.default.execute);
             continue;
         }
 
-        client.on(event.default.name, (...args) => event.default.execute(client, ...args));
+        client.on(event.default.name, event.default.execute);
     }
 };

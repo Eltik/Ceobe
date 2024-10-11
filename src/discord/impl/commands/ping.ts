@@ -5,6 +5,7 @@ import type { Command } from "../../../types/impl/discord";
 export default {
     data: new SlashCommandBuilder().setName("ping").setDescription("Dadadada!"),
     execute: async (interaction: Interaction) => {
+        console.log(interaction.isCommand());
         if (!interaction.isCommand()) return;
 
         const responses = ["Dadadada!", "Gooooooo!", "Haah!", "Prey should stay still!"];

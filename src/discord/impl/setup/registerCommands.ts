@@ -13,11 +13,11 @@ export const registerCommands = async () => {
     const commandList: SlashCommandBuilder[] = [];
 
     for (const file of commands) {
-        const command = await import(`../../commands/${file}`);
+        const command = await import(join(import.meta.dir, "../commands", file));
         await client.application?.commands.set([command.default.data]);
 
         commandList.push(command.default.data);
-        await emitter.emit(Events.DISCORD_COMMAND_REGISTER, command.default);
+        await emitter.emit(Events.DISCORD_COMMAND_REGISTER, command.default.data);
     }
 
     if (env.USE_GUILD_COMMANDS) {

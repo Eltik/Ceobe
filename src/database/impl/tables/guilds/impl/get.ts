@@ -24,3 +24,26 @@ export const get = async (input: GetGuildInput): Promise<Guild | null> => {
         return null;
     }
 };
+
+export const getByGuildId = async (input: GetGuildInput): Promise<Guild | null> => {
+    const query = `
+        SELECT * FROM ${tableName}
+        WHERE guild_id = $1;
+    `;
+
+    const params = [input.guild_id];
+
+    try {
+        const res = await postgres.query(query, params);
+
+        if (res.rows.length > 0) {
+            const guild = res.rows[0] as Guild;
+            return guild;
+        } else {
+            return null;
+        }
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+};

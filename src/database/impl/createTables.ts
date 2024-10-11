@@ -22,13 +22,21 @@ const compareSchemas = (currentSchema: Schema, existingSchema: Record<string, an
         const existingFieldNotNull = existingField.notNull;
 
         const fieldDefault = field.options?.default === undefined ? null : field.options.default === "'[]'" ? "'[]'::jsonb" : field.options.default;
-        const existingFieldDefault = existingField.default;
+        const existingFieldDefault = typeof fieldDefault === "number" ? parseFloat(existingField.default) : existingField.default;
 
         const fieldCheck = field.options?.check;
         const existingFieldCheck = existingField.check;
 
         // Compare field types and options
         if (fieldType !== existingFieldType || fieldPrimaryKey !== existingFieldPrimaryKey || fieldNotNull !== existingFieldNotNull || fieldDefault !== existingFieldDefault || fieldCheck !== existingFieldCheck) {
+            console.log(`Field ${name} differs:`, {
+                type: fieldType !== existingFieldType,
+                primaryKey: fieldPrimaryKey !== existingFieldPrimaryKey,
+                notNull: fieldNotNull !== existingFieldNotNull,
+                default: fieldDefault !== existingFieldDefault,
+            });
+
+            console.log(fieldDefault, existingFieldDefault);
             return false;
         }
     }
@@ -144,44 +152,4 @@ export const createTables = async () => {
     }
 
     await Promise.all(tableCreationPromises);
-
-    const foreignKeyPromises: Promise<void>[] = [];
-
-    for (const { schema, tableName } of tables) {
-        const promise = new Promise<void>(async (resolve, reject) => {
-            const foreignKeyQueries = Object.entries(schema)
-                .filter(([, field]) => field.options?.constraints?.foreignKey)
-                .map(([name, field]) => {
-                    const { foreignKey } = field.options!.constraints!;
-                    if (!foreignKey) return "";
-
-                    const fieldType = `${name} ${field.type}`;
-                    const constraints: string[] = [];
-
-                    if (field.options?.primaryKey) constraints.push("PRIMARY KEY");
-                    if (field.options?.notNull) constraints.push("NOT NULL");
-                    if (field.options?.unique) constraints.push("UNIQUE");
-                    if (field.options?.default) constraints.push(`DEFAULT ${field.options.default}`);
-                    if (field.options?.check) constraints.push(`CHECK (${field.options.check})`);
-
-                    const onDeleteClause = foreignKey.onDelete ? `ON DELETE ${foreignKey.onDelete}` : "";
-                    console.log(`ALTER TABLE ${tableName} ADD COLUMN IF NOT EXISTS ${`${fieldType} ${constraints.join(" ")}`.trim()} CONSTRAINT ${`${tableName}_${foreignKey.table}_fk_${name}`} REFERENCES ${foreignKey.table} (${foreignKey.field}) ${onDeleteClause};`);
-                    return `ALTER TABLE ${tableName} ADD COLUMN IF NOT EXISTS ${name} CONSTRAINT ${`${tableName}_${foreignKey.table}_fk_${name}`} REFERENCES ${foreignKey.table} (${foreignKey.field}) ${onDeleteClause};`;
-                });
-
-            try {
-                for (const query of foreignKeyQueries) {
-                    await postgres.query(query);
-                }
-                resolve();
-            } catch (error) {
-                console.error(`Error adding foreign key constraints for table ${tableName}:`, error);
-                reject(error);
-            }
-        });
-
-        foreignKeyPromises.push(promise);
-    }
-
-    await Promise.all(foreignKeyPromises);
 };
