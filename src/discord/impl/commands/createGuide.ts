@@ -3,7 +3,7 @@ import type { Interaction } from "discord.js";
 import type { Command } from "../../../types/impl/discord";
 
 export default {
-    data: new SlashCommandBuilder().setName("create-guide").setDescription("Guide on how to use the /create-guild command.").setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
+    data: new SlashCommandBuilder().setName("create-guide").setDescription("Guide on how to use the /create-guild command.").setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
     execute: async (interaction: Interaction) => {
         if (!interaction.isCommand()) return;
 

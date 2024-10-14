@@ -29,14 +29,6 @@ const compareSchemas = (currentSchema: Schema, existingSchema: Record<string, an
 
         // Compare field types and options
         if (fieldType !== existingFieldType || fieldPrimaryKey !== existingFieldPrimaryKey || fieldNotNull !== existingFieldNotNull || fieldDefault !== existingFieldDefault || fieldCheck !== existingFieldCheck) {
-            console.log(`Field ${name} differs:`, {
-                type: fieldType !== existingFieldType,
-                primaryKey: fieldPrimaryKey !== existingFieldPrimaryKey,
-                notNull: fieldNotNull !== existingFieldNotNull,
-                default: fieldDefault !== existingFieldDefault,
-            });
-
-            console.log(fieldDefault, existingFieldDefault);
             return false;
         }
     }

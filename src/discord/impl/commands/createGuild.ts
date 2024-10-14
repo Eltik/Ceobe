@@ -8,9 +8,9 @@ export default {
     data: new SlashCommandBuilder()
         .setName("create-guild")
         .setDescription("Creates a new guild.")
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels)
-        .addStringOption((option) => option.setName("channels").setDescription("A JSON object containing channels obtained from /get-channel.").setRequired(true))
-        .addStringOption((option) => option.setName("roles").setDescription("A JSON object containing roles obtained from /get-role.").setRequired(true)),
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
+        .addStringOption((option) => option.setName("channels").setDescription("A JSON object containing channels obtained from `/get-channel`.").setRequired(true))
+        .addStringOption((option) => option.setName("roles").setDescription("A JSON object containing roles obtained from `/get-role`.").setRequired(true)),
     execute: async (interaction: Interaction) => {
         if (!interaction.isCommand()) return;
 
@@ -19,8 +19,8 @@ export default {
 
         await create({
             guild_id: interaction.guildId,
-            channels,
-            roles,
+            channels: JSON.stringify(channels),
+            roles: JSON.stringify(roles),
         });
 
         const embed = new EmbedBuilder().setDescription("The guild has been created successfully.").setColor(colors.successColor);
