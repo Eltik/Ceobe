@@ -16,6 +16,9 @@ export enum Events {
     DATABASE_USERS_CREATE = "database.users.create",
     DATABASE_USERS_UPDATE = "database.users.update",
     DATABASE_USERS_DELETE = "database.users.delete",
+
+    LOCAL_TABLES_DOWNLOADED = "local.tables.downloaded",
+    LOCAL_TABLES_INITIATED = "local.tables.initiated",
 }
 
 const emitter = new EventEmitter2({});

@@ -5,9 +5,15 @@ import { getByGuildId } from "../../../database/impl/tables/guilds/impl/get";
 import { colors } from "../..";
 
 export default {
-    data: new SlashCommandBuilder().setName("get-guild").setDescription("Fetches the current guild and displays the data.").setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
+    data: new SlashCommandBuilder()
+        .setName("get-guild")
+        .setDescription("Fetches the current guild and displays the data.")
+        .addBooleanOption((option) => option.setName("json").setDescription("Whether to display the guild as JSON or not.").setRequired(false))
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
     execute: async (interaction: Interaction) => {
         if (!interaction.isCommand()) return;
+
+        const json = (interaction.options.get("json")?.value as boolean) ?? false;
 
         const guild = await getByGuildId({
             guild_id: interaction.guildId ?? "",
@@ -16,6 +22,11 @@ export default {
         if (!guild) {
             const embed = new EmbedBuilder().setDescription("The guild does not exist.").setColor(colors.errorColor);
             await interaction.reply({ embeds: [embed], ephemeral: true });
+            return;
+        }
+
+        if (json) {
+            await interaction.reply({ content: `\`\`\`json\n${JSON.stringify(guild, null, 2)}\`\`\``, ephemeral: false });
             return;
         }
 

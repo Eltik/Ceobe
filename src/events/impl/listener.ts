@@ -45,4 +45,12 @@ export const listener = async () => {
     emitter.on(Events.DISCORD_COMMAND_REGISTER, async (data) => {
         console.log(colors.gray(`Command registered: ${data.name}`));
     });
+
+    emitter.on(Events.LOCAL_TABLES_DOWNLOADED, async (data) => {
+        console.log(colors.green(`Downloaded table ${data.name}.`));
+    });
+
+    emitter.on(Events.LOCAL_TABLES_INITIATED, async () => {
+        console.log(colors.green(`Initiated tables!`));
+    });
 };
