@@ -6,7 +6,7 @@ import { ExcelTables } from "../../../types/impl/lib/impl/local";
 import { download } from "./impl/download";
 import { exists } from "./impl/exists";
 
-export const REPOSITORY = "Kengxxiao/ArknightsGameData_YoStar";
+export const GAME_DATA_REPOSITORY = "Kengxxiao/ArknightsGameData_YoStar";
 
 export const init = async () => {
     const promises: Promise<void>[] = [];
@@ -23,7 +23,7 @@ export const init = async () => {
                             name: key,
                         });
                     } catch {
-                        console.error(`Failed to download ${key} from ${REPOSITORY}`);
+                        console.error(`Failed to download ${key} from ${GAME_DATA_REPOSITORY}`);
                     }
                 }
                 resolve();
