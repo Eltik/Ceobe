@@ -21,7 +21,7 @@ const compareSchemas = (currentSchema: Schema, existingSchema: Record<string, an
         const fieldNotNull = field.options?.notNull === undefined ? false : field.options.notNull;
         const existingFieldNotNull = existingField.notNull;
 
-        const fieldDefault = field.options?.default === undefined ? null : field.options.default === "'[]'" ? "'[]'::jsonb" : field.options.default;
+        const fieldDefault = field.options?.default === undefined ? null : field.options.default === "'[]'" ? "'[]'::jsonb" : field.options.default === "'{}'" ? "'{}'::jsonb" : field.options.default;
         const existingFieldDefault = typeof fieldDefault === "number" ? parseFloat(existingField.default) : existingField.default;
 
         const fieldCheck = field.options?.check;
@@ -29,6 +29,16 @@ const compareSchemas = (currentSchema: Schema, existingSchema: Record<string, an
 
         // Compare field types and options
         if (fieldType !== existingFieldType || fieldPrimaryKey !== existingFieldPrimaryKey || fieldNotNull !== existingFieldNotNull || fieldDefault !== existingFieldDefault || fieldCheck !== existingFieldCheck) {
+            /*
+            console.log(`Field ${name} differs:`, {
+                type: fieldType !== existingFieldType,
+                primaryKey: fieldPrimaryKey !== existingFieldPrimaryKey,
+                notNull: fieldNotNull !== existingFieldNotNull,
+                default: fieldDefault !== existingFieldDefault,
+            });
+
+            console.log(fieldDefault, existingFieldDefault);
+            */
             return false;
         }
     }

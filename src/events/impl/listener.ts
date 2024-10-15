@@ -38,6 +38,18 @@ export const listener = async () => {
         console.log(colors.gray(`User deleted: ${data?.user_id}`));
     });
 
+    emitter.on(Events.DATABASE_CHALLENGE_CREATE, async (data) => {
+        console.log(colors.gray(`Challenge created: ${data?.id}`));
+    });
+
+    emitter.on(Events.DATABASE_CHALLENGE_UPDATE, async (data) => {
+        console.log(colors.gray(`Challenge updated: ${data?.id}`));
+    });
+
+    emitter.on(Events.DATABASE_CHALLENGE_DELETE, async (data) => {
+        console.log(colors.gray(`Challenge deleted: ${data?.id}`));
+    });
+
     emitter.on(Events.DISCORD_READY, async () => {
         console.log(colors.green("Discord bot is ready!"));
     });

@@ -9,4 +9,5 @@ export type Event = {
 export type Command = {
     data: SlashCommandBuilder;
     execute: (interaction: any) => Promise<void>;
+    autocomplete?: (interaction: any) => Promise<void>;
 };

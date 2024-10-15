@@ -17,6 +17,10 @@ export enum Events {
     DATABASE_USERS_UPDATE = "database.users.update",
     DATABASE_USERS_DELETE = "database.users.delete",
 
+    DATABASE_CHALLENGE_CREATE = "database.challenge.create",
+    DATABASE_CHALLENGE_UPDATE = "database.challenge.update",
+    DATABASE_CHALLENGE_DELETE = "database.challenge.delete",
+
     LOCAL_TABLES_DOWNLOADED = "local.tables.downloaded",
     LOCAL_TABLES_INITIATED = "local.tables.initiated",
 }

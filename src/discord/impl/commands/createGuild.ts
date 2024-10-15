@@ -8,7 +8,7 @@ export default {
     data: new SlashCommandBuilder()
         .setName("create-guild")
         .setDescription("Creates a new guild.")
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
         .addStringOption((option) => option.setName("channels").setDescription("A JSON object containing channels obtained from `/get-channel`.").setRequired(true))
         .addStringOption((option) => option.setName("roles").setDescription("A JSON object containing roles obtained from `/get-role`.").setRequired(true)),
     execute: async (interaction: Interaction) => {

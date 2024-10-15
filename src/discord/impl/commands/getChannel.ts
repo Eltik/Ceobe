@@ -8,7 +8,7 @@ export default {
     data: new SlashCommandBuilder()
         .setName("get-channel")
         .setDescription("Generates a JSON object for a channel.")
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
         .addStringOption((option) =>
             option
                 .setName("type")

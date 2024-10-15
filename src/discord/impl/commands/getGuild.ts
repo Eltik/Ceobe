@@ -9,7 +9,7 @@ export default {
         .setName("get-guild")
         .setDescription("Fetches the current guild and displays the data.")
         .addBooleanOption((option) => option.setName("json").setDescription("Whether to display the guild as JSON or not.").setRequired(false))
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
     execute: async (interaction: Interaction) => {
         if (!interaction.isCommand()) return;
 

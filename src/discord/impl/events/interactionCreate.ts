@@ -28,7 +28,7 @@ export default {
 
             for (const file of commands) {
                 const command = await import(join(import.meta.dir, `../commands/${file}`));
-                if (command.default.name !== name) {
+                if (command.default.data.name !== name) {
                     continue;
                 }
 

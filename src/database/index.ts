@@ -3,6 +3,7 @@ import { Client } from "pg";
 import emitter, { Events } from "../events";
 import { table as guildsTable, tableName as guildsTableName } from "./impl/tables/guilds";
 import { table as usersTable, tableName as usersTableName } from "./impl/tables/users";
+import { table as challengesTable, tableName as challengesTableName } from "./impl/tables/challenges";
 import { Schema } from "../types/impl/database";
 import { createTables } from "./impl/createTables";
 
@@ -19,6 +20,10 @@ export const tables: {
     {
         schema: usersTable,
         tableName: usersTableName,
+    },
+    {
+        schema: challengesTable,
+        tableName: challengesTableName,
     },
 ];
 

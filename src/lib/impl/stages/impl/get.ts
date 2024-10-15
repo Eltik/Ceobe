@@ -1,6 +1,6 @@
 import { RESOURCE_REPOSITORY } from "..";
 import { ExcelTables } from "../../../../types/impl/lib/impl/local";
-import { Stage, Stages } from "../../../../types/impl/lib/impl/stages";
+import type { Stage, Stages } from "../../../../types/impl/lib/impl/stages";
 import { get as getStages } from "../../local/impl/get";
 
 export const get = async (id: string): Promise<Stage | null> => {
@@ -8,7 +8,7 @@ export const get = async (id: string): Promise<Stage | null> => {
     const stage = stages.find((stage) => stage.stageId === id) ?? null;
     if (stage) {
         Object.assign(stage, {
-            image: `https://raw.githubusercontent.com/${RESOURCE_REPOSITORY}/main/map/${stage.stageId}.png`,
+            image: `https://raw.githubusercontent.com/${RESOURCE_REPOSITORY}/main/map/${stage.stageId.replace("easy", "main").replace("tough", "main")}.png`,
         });
     }
 
