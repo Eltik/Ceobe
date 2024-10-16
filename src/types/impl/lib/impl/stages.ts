@@ -97,6 +97,7 @@ export type Stage = {
 
     // Added fields
     image?: string;
+    zoneName?: string;
 };
 
 export type MapTheme = {

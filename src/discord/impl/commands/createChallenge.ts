@@ -5,8 +5,6 @@ import { search } from "../../../lib/impl/stages/impl/search";
 import { getByGuildId as getGuild } from "../../../database/impl/tables/guilds/impl/get";
 import { create as createChallenge } from "../../../database/impl/tables/challenges/impl/create";
 import { get as getStage } from "../../../lib/impl/stages/impl/get";
-import { get as getZone } from "../../../lib/impl/zones/impl/get";
-import { get as getActivity } from "../../../lib/impl/activity/impl/get";
 import { colors } from "../..";
 import { ChannelType } from "../../../types/impl/database/impl/guilds";
 
@@ -47,17 +45,13 @@ export default {
          **Stage:** \`${stage.code}\`
          */
 
-        const zone = await getZone(stage.zoneId);
-        const activity = zone ? await getActivity(zone) : null;
-        const zoneName = activity ? activity.name : zone ? (zone.zoneNameFirst ?? zone.zoneNameSecond ?? zone.zoneNameThird ?? zone.zoneNameTitleCurrent) : "Unknown";
-
         const challengeEmbed = new EmbedBuilder()
             .setTitle(`Challenge: ${name}`)
             .setDescription(
                 `
                 \`\`\`${challenge}\`\`\`
                 **Recommended Level:** \`${stage.dangerLevel}\`
-                **Zone:** \`${zoneName}\`
+                **Zone:** \`${stage.zoneName}\`
             `,
             )
             .setColor(colors.baseColor);
