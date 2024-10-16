@@ -60,6 +60,6 @@ export default {
             });
         });
 
-        await interaction.reply({ embeds: [embed], ephemeral: false });
+        await interaction.reply({ embeds: [embed], ephemeral: true });
     },
 } as Command;

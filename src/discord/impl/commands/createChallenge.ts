@@ -1,11 +1,14 @@
-import { EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 import type { Interaction, TextChannel } from "discord.js";
 import type { Command } from "../../../types/impl/discord";
 import { search } from "../../../lib/impl/stages/impl/search";
+import { getByGuildId as getGuild } from "../../../database/impl/tables/guilds/impl/get";
+import { create as createChallenge } from "../../../database/impl/tables/challenges/impl/create";
 import { get as getStage } from "../../../lib/impl/stages/impl/get";
 import { get as getZone } from "../../../lib/impl/zones/impl/get";
 import { get as getActivity } from "../../../lib/impl/activity/impl/get";
 import { colors } from "../..";
+import { ChannelType } from "../../../types/impl/database/impl/guilds";
 
 export default {
     data: new SlashCommandBuilder()
@@ -71,7 +74,31 @@ export default {
             }
         }
 
-        await (interaction.channel as TextChannel).send({ embeds: [challengeEmbed] });
+        const guild = await getGuild({
+            guild_id: interaction.guildId ?? "",
+        });
+
+        if (!guild) {
+            const embed = new EmbedBuilder().setDescription("You haven't created a guild for this server! Create one using `/create-guild`.").setColor(colors.errorColor);
+            return await interaction.reply({ embeds: [embed] });
+        }
+
+        const channel = await interaction.guild?.channels.fetch(guild.channels.find((c) => c.type === ChannelType.DAILY_CHANNEL)?.id ?? "");
+
+        const message = await (channel as TextChannel).send({ embeds: [challengeEmbed] });
+
+        const createdChallenge = await createChallenge({
+            guild_id: guild.guild_id,
+            message_id: message.id,
+            stage_name: stage.code,
+            stage_data: stage,
+        });
+
+        const submitButton = new ButtonBuilder().setCustomId(`submit_challenge_${createdChallenge.id}`).setLabel("Submit Challenge").setStyle(ButtonStyle.Success);
+
+        const actionBuilder = new ActionRowBuilder().addComponents(submitButton);
+        await (channel as TextChannel).send({ components: [actionBuilder as ActionRowBuilder<any>] });
+
         await interaction.reply({ embeds: [successEmbed], ephemeral: true });
     },
     autocomplete: async (interaction: Interaction) => {
@@ -80,12 +107,10 @@ export default {
             const stages = await search(focusedValue);
 
             await interaction.respond(
-                stages
-                    .slice(0, 25)
-                    .map((choice) => ({
-                        name: choice.difficulty === "FOUR_STAR" ? `${choice.code} CM` : choice.diffGroup === "EASY" ? `${choice.code} Easy` : choice.diffGroup === "NORMAL" ? `${choice.code} Normal` : choice.diffGroup === "TOUGH" ? `${choice.code} Adverse` : choice.code,
-                        value: choice.stageId,
-                    })),
+                stages.slice(0, 25).map((choice) => ({
+                    name: choice.difficulty === "FOUR_STAR" ? `${choice.code} CM` : choice.diffGroup === "EASY" ? `${choice.code} Easy` : choice.diffGroup === "NORMAL" ? `${choice.code} Normal` : choice.diffGroup === "TOUGH" ? `${choice.code} Adverse` : choice.code,
+                    value: choice.stageId,
+                })),
             );
         }
     },
