@@ -3,6 +3,7 @@ import type { Interaction } from "discord.js";
 import type { Command } from "../../../types/impl/discord";
 import { getByGuildId } from "../../../database/impl/tables/guilds/impl/get";
 import { colors } from "../..";
+import { create as createBin } from "../../../lib/impl/bins/impl/create";
 
 export default {
     data: new SlashCommandBuilder()
@@ -26,7 +27,8 @@ export default {
         }
 
         if (json) {
-            await interaction.reply({ content: `\`\`\`json\n${JSON.stringify(guild, null, 2)}\`\`\``, ephemeral: false });
+            const url = await createBin(JSON.stringify(guild, null, 2));
+            await interaction.reply({ content: url, ephemeral: true });
             return;
         }
 

@@ -11,3 +11,8 @@ export type Command = {
     execute: (interaction: any) => Promise<void>;
     autocomplete?: (interaction: any) => Promise<void>;
 };
+
+export type Button = {
+    id: string;
+    execute: (interaction: any) => Promise<void>;
+};

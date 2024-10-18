@@ -1,4 +1,4 @@
-export type FieldType = "TEXT" | "INTEGER" | "DECIMAL" | "BOOLEAN" | "JSONB" | "TIMESTAMP";
+export type FieldType = "TEXT" | "INTEGER" | "DECIMAL" | "BOOLEAN" | "JSONB" | "TIMESTAMP" | "TEXT[]";
 
 export type ConstraintOptions = {
     foreignKey?: {

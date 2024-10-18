@@ -38,6 +38,13 @@ export const table: Schema = {
             default: 1,
         },
     },
+    submited_challenges: {
+        type: "TEXT[]",
+        options: {
+            notNull: true,
+            default: "ARRAY[]::TEXT[]",
+        },
+    },
     created_at: {
         type: "TIMESTAMP",
         options: {

@@ -22,17 +22,32 @@ export default {
                 break;
             }
         } else if (interaction.isAutocomplete()) {
-            const name = interaction.commandName;
+            const { commandName } = interaction;
 
             const commands = readdirSync(join(import.meta.dir, "../commands")).filter((file) => file.endsWith(".ts") || file.endsWith(".js"));
 
             for (const file of commands) {
                 const command = await import(join(import.meta.dir, `../commands/${file}`));
-                if (command.default.data.name !== name) {
+                if (command.default.data.name !== commandName) {
                     continue;
                 }
 
                 await command.default.autocomplete(interaction);
+                break;
+            }
+        } else if (interaction.isButton()) {
+            const { customId } = interaction;
+
+            const buttons = readdirSync(join(import.meta.dir, "../buttons")).filter((file) => file.endsWith(".ts") || file.endsWith(".js"));
+
+            for (const file of buttons) {
+                const button = await import(join(import.meta.dir, `../buttons/${file}`));
+
+                if (!customId.startsWith(button.default.id)) {
+                    continue;
+                }
+
+                await button.default.execute(interaction);
                 break;
             }
         }

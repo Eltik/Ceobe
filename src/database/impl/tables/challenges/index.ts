@@ -16,7 +16,6 @@ export const table: Schema = {
         type: "TEXT",
         options: {
             notNull: true,
-            unique: true,
         },
     },
     message_id: {

@@ -24,3 +24,25 @@ export const get = async (input: GetChallengeInput): Promise<Challenge | null> =
         return null;
     }
 };
+
+export const getLatestChallenge = async (): Promise<Challenge | null> => {
+    const query = `
+        SELECT * FROM ${tableName}
+        ORDER BY created_at DESC
+        LIMIT 1;
+    `;
+
+    try {
+        const res = await postgres.query(query);
+
+        if (res.rows.length > 0) {
+            const guild = res.rows[0] as Challenge;
+            return guild;
+        } else {
+            return null;
+        }
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+};
