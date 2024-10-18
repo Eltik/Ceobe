@@ -6,6 +6,7 @@ import type { User } from "./users";
 export type CreateGuildInput = SchemaToInput<typeof table>;
 export type UpdateGuildInput = SchemaToUpdateInput<typeof table> & { id: string };
 export type GetGuildInput = { id?: string; guild_id?: string };
+export type DeleteGuildInput = { id: string };
 
 export type Guild = {
     id: string;
