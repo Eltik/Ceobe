@@ -7,7 +7,7 @@ import { create as createChallenge } from "../../../database/impl/tables/challen
 import { get as getStage } from "../../../lib/impl/stages/impl/get";
 import { get as getOperator } from "../../../lib/impl/operators/impl/get";
 import { colors } from "../..";
-import { ChannelType } from "../../../types/impl/database/impl/guilds";
+import { ChannelType, RoleType } from "../../../types/impl/database/impl/guilds";
 
 export default {
     data: new SlashCommandBuilder()
@@ -126,8 +126,9 @@ export default {
         }
 
         const channel = await interaction.guild?.channels.fetch(guild.channels.find((c) => c.type === ChannelType.DAILY_CHANNEL)?.id ?? "");
+        const dailyChallengeRole = guild.roles.find((r) => r.type === RoleType.DAILY_ROLE)?.id;
 
-        const message = await (channel as TextChannel).send({ embeds: [challengeEmbed] });
+        const message = await (channel as TextChannel).send({ embeds: [challengeEmbed], content: dailyChallengeRole ? `<@&${dailyChallengeRole}>` : "" });
 
         const createdChallenge = await createChallenge({
             guild_id: guild.guild_id,
