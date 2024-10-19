@@ -3,6 +3,13 @@ export type Voices = {
     // ...
 };
 
+export enum Languages {
+    CN = "cn",
+    EN = "en",
+    JP = "jp",
+    KR = "kr",
+}
+
 export type CharacterWords = {
     charWordId: string;
     wordKey: string;
@@ -24,4 +31,5 @@ export type CharacterWords = {
     // Added fields
     id?: string;
     voiceURL?: string;
+    language?: Languages;
 };

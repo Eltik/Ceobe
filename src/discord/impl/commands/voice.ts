@@ -8,13 +8,20 @@ import { getByCharacterId as getVoice } from "../../../lib/impl/voices/impl/get"
 import { colors } from "../..";
 import { joinVC } from "../voice/impl/joinVC";
 import { playAudio } from "../voice/impl/playAudio";
+import { Languages } from "../../../types/impl/lib/impl/voices";
 
 export default {
     data: new SlashCommandBuilder()
         .setName("voice")
         .setDescription("Plays the voice line of an operator.")
         .addStringOption((option) => option.setName("operator").setDescription("The operator to play the voice line for.").setRequired(true).setAutocomplete(true))
-        .addStringOption((option) => option.setName("voice").setDescription("The voice line to play.").setRequired(true).setAutocomplete(true)),
+        .addStringOption((option) => option.setName("voice").setDescription("The voice line to play.").setRequired(true).setAutocomplete(true))
+        .addStringOption((option) =>
+            option
+                .setName("language")
+                .setDescription("The language to use. By default, it will be JP.")
+                .addChoices(Object.values(Languages).map((language) => ({ name: language.toUpperCase(), value: language }))),
+        ),
     execute: async (interaction: Interaction) => {
         if (!interaction.isCommand()) return;
 
@@ -22,9 +29,10 @@ export default {
 
         const operatorId = interaction.options.get("operator")?.value as string;
         const voiceTitle = interaction.options.get("voice")?.value as string;
+        const language = (interaction.options.get("language")?.value as string) ?? Languages.JP;
 
         const operator = await getOperator(operatorId);
-        const voiceLines = await getVoice(operatorId);
+        const voiceLines = await getVoice(operatorId, language as Languages);
         const voice = voiceLines.find((voice) => voice.voiceTitle === voiceTitle);
 
         if (!operator) {
@@ -55,7 +63,11 @@ export default {
 
         await interaction.editReply({ embeds: [embed] });
 
-        await playAudio(voice.voiceURL ?? "", connection);
+        try {
+            await playAudio(voice, connection);
+        } catch {
+            //
+        }
     },
     autocomplete: async (interaction: Interaction) => {
         if (interaction.isAutocomplete()) {

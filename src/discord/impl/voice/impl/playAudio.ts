@@ -3,36 +3,45 @@ import type { VoiceConnection } from "@discordjs/voice";
 import { pipeline } from "node:stream";
 import { promisify } from "node:util";
 import { join } from "node:path";
-import { createWriteStream } from "node:fs";
+import { createWriteStream, existsSync, mkdirSync } from "node:fs";
+import { CharacterWords } from "../../../../types/impl/lib/impl/voices";
 
-export const playAudio = async (url: string, connection: VoiceConnection): Promise<void> => {
+export const playAudio = async (voice: CharacterWords, connection: VoiceConnection): Promise<void> => {
     // Download the audio file and play it in the voice channel
     try {
-        const response = await fetch(url);
+        const response = await fetch(voice.voiceURL!);
 
         if (!response.ok) {
-            throw new Error(`Failed to download file from ${url}: ${response.statusText}`);
+            throw new Error(`Failed to download file from ${voice.voiceURL}: ${response.statusText}`);
         }
 
-        const pipelineAsync = promisify(pipeline);
+        const path = join(import.meta.dir, `./voices/${voice.language}/${voice.charWordId}.mp3`);
 
-        const writer = createWriteStream(join(import.meta.dir, "./audio.mp3")) as NodeJS.WritableStream;
+        if (!existsSync(join(import.meta.dir, `./voices/${voice.language}`))) {
+            mkdirSync(join(import.meta.dir, `./voices/${voice.language}`), { recursive: true });
+        }
 
-        const finishPromise = new Promise<void>((resolve, reject) => {
-            writer.on("finish", () => resolve());
-            writer.on("error", (err) => reject(err));
-        });
+        if (!existsSync(path)) {
+            const pipelineAsync = promisify(pipeline);
 
-        await pipelineAsync(response.body!, writer);
+            const writer = createWriteStream(path) as NodeJS.WritableStream;
 
-        await finishPromise;
+            const finishPromise = new Promise<void>((resolve, reject) => {
+                writer.on("finish", () => resolve());
+                writer.on("error", (err) => reject(err));
+            });
+
+            await pipelineAsync(response.body!, writer);
+
+            await finishPromise;
+        }
 
         const player = createAudioPlayer();
-        const resource = createAudioResource(join(import.meta.dir, `./audio.mp3`));
+        const resource = createAudioResource(path);
 
         player.play(resource);
         connection.subscribe(player);
     } catch {
-        throw new Error(`Failed to download file from ${url}.`);
+        throw new Error(`Failed to download file from ${voice.voiceURL}.`);
     }
 };
