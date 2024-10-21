@@ -2,6 +2,7 @@ import type { Interaction } from "discord.js";
 import type { Event } from "../../../types/impl/discord";
 import { readdirSync } from "node:fs";
 import { join } from "node:path";
+import colors from "colors";
 
 export default {
     name: "interactionCreate",
@@ -17,6 +18,8 @@ export default {
                 if (command.default.data.name !== commandName) {
                     continue;
                 }
+
+                console.log(colors.gray(`[COMMAND] ${commandName}`));
 
                 await command.default.execute(interaction);
                 break;

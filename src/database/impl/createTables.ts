@@ -12,7 +12,7 @@ const compareSchemas = (currentSchema: Schema, existingSchema: Record<string, an
         const existingField = existingSchema[name];
         if (!existingField) return false;
 
-        const fieldType = field.type.toLowerCase() === "timestamp" ? "timestamp without time zone" : field.type.toLowerCase() === "decimal" ? "numeric" : field.type.toLowerCase();
+        const fieldType = field.type.toLowerCase() === "timestamp" ? "timestamp without time zone" : field.type.toLowerCase() === "decimal" ? "numeric" : field.type.toLowerCase() === "text[]" ? "array" : field.type.toLowerCase();
         const existingFieldType = existingField.type.toLowerCase();
 
         const fieldPrimaryKey = field.options?.primaryKey ?? false;
@@ -21,7 +21,18 @@ const compareSchemas = (currentSchema: Schema, existingSchema: Record<string, an
         const fieldNotNull = field.options?.notNull === undefined ? false : field.options.notNull;
         const existingFieldNotNull = existingField.notNull;
 
-        const fieldDefault = field.options?.default === undefined ? null : field.options.default === "'[]'" ? "'[]'::jsonb" : field.options.default === "'{}'" ? "'{}'::jsonb" : field.options.default;
+        const fieldDefault =
+            field.options?.default === undefined
+                ? null
+                : field.options.default === "'[]'"
+                  ? "'[]'::jsonb"
+                  : field.options.default === "'{}'"
+                    ? "'{}'::jsonb"
+                    : field.options.default === "ARRAY[]::TEXT[]"
+                      ? "ARRAY[]::text[]"
+                      : field.options.default === "ARRAY[]::JSONB[]"
+                        ? "ARRAY[]::jsonb[]"
+                        : field.options.default;
         const existingFieldDefault = typeof fieldDefault === "number" ? parseFloat(existingField.default) : existingField.default;
 
         const fieldCheck = field.options?.check;
@@ -39,6 +50,7 @@ const compareSchemas = (currentSchema: Schema, existingSchema: Record<string, an
 
             console.log(fieldDefault, existingFieldDefault);
             */
+
             return false;
         }
     }

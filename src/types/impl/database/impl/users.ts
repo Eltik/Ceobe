@@ -12,5 +12,11 @@ export type User = {
     level: number;
     exp: number;
     submitted_challenges: string[];
+    favorites: Record<Favorites, any>;
     created_at: Date;
 };
+
+export enum Favorites {
+    operator = "operator",
+    map = "map",
+}

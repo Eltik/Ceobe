@@ -45,6 +45,13 @@ export const table: Schema = {
             default: "ARRAY[]::TEXT[]",
         },
     },
+    favorites: {
+        type: "JSONB",
+        options: {
+            notNull: true,
+            default: "'{}'",
+        },
+    },
     created_at: {
         type: "TIMESTAMP",
         options: {
