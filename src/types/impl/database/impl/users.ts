@@ -18,5 +18,5 @@ export type User = {
 
 export enum Favorites {
     operator = "operator",
-    map = "map",
+    stage = "stage",
 }

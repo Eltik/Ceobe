@@ -25,7 +25,7 @@ export default {
 
         const embed = new EmbedBuilder()
             .setTitle(`User: ${user.tag}`)
-            .setDescription(`Level: ${data.level}\nExperience: ${data.exp}\nFavorite Operator: ${data.favorites.operator ?? "None"}`)
+            .setDescription(`Level: ${data.level}\nExperience: ${data.exp}\nFavorite Operator: ${data.favorites.operator ?? "None"}\nFavorite Stage: ${data.favorites.stage ?? "None"}\nSubmitted Challenges: ${data.submitted_challenges.map((challenge) => challenge).join(", ")}`)
             .setColor(colors.successColor);
         await interaction.reply({ embeds: [embed] });
     },

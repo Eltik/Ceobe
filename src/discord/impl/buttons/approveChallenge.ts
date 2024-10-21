@@ -63,12 +63,21 @@ export default {
             });
         } else {
             const awardedExperience = awardExperience(user.exp, user.level, EXPERIENCE_PER_CHALLENGE);
-            await updateUser({
-                id: user.id,
-                exp: awardedExperience.userExperience,
-                level: awardedExperience.userLevel,
-                submitted_challenges: [...user.submitted_challenges, challengeId],
-            });
+            if (user.submitted_challenges && Array.isArray(user.submitted_challenges)) {
+                await updateUser({
+                    id: user.id,
+                    exp: awardedExperience.userExperience,
+                    level: awardedExperience.userLevel,
+                    submitted_challenges: [...user.submitted_challenges, challengeId],
+                });
+            } else {
+                await updateUser({
+                    id: user.id,
+                    exp: awardedExperience.userExperience,
+                    level: awardedExperience.userLevel,
+                    submitted_challenges: [challengeId],
+                });
+            }
 
             if (awardedExperience.levelUps > 0) {
                 const levelUpEmbed = new EmbedBuilder().setTitle("Level Up!").setDescription(`Congratulations, <@${userId}>! You have leveled up to level ${awardedExperience.userLevel}.`).setColor(colors.successColor).setTimestamp();

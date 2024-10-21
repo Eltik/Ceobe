@@ -38,7 +38,7 @@ export const table: Schema = {
             default: 1,
         },
     },
-    submited_challenges: {
+    submitted_challenges: {
         type: "TEXT[]",
         options: {
             notNull: true,
