@@ -126,12 +126,13 @@ export default {
             { name: "⏱️ Attack Interval", value: atkInterval, inline: true },
         );
 
+        const levelUpCost = new ButtonBuilder().setCustomId(`get-operator:${operatorId}:level-up-cost`).setLabel("Level-Up Cost").setStyle(ButtonStyle.Secondary);
         const skillsButton = new ButtonBuilder().setCustomId(`get-operator:${operatorId}:skills`).setLabel("Skills").setStyle(ButtonStyle.Secondary);
         const modulesButton = new ButtonBuilder().setCustomId(`get-operator:${operatorId}:modules`).setLabel("Modules").setStyle(ButtonStyle.Secondary);
-        const skins = new ButtonBuilder().setCustomId(`get-operator:${operatorId}:skins`).setLabel("Skins").setStyle(ButtonStyle.Secondary);
+        const skinsButton = new ButtonBuilder().setCustomId(`get-operator:${operatorId}:skins`).setLabel("Skins").setStyle(ButtonStyle.Secondary);
         const cancelButton = new ButtonBuilder().setCustomId(`get-operator:${operatorId}:cancel`).setLabel("Cancel").setStyle(ButtonStyle.Danger);
 
-        const actionBuilder = new ActionRowBuilder().addComponents(skillsButton, modulesButton, skins, cancelButton);
+        const actionBuilder = new ActionRowBuilder().addComponents(levelUpCost, skillsButton, modulesButton, skinsButton, cancelButton);
 
         await interaction.reply({ embeds: [embed], components: [actionBuilder as ActionRowBuilder<ButtonBuilder>] });
     },

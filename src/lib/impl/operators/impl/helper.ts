@@ -12,7 +12,7 @@ export function insertBlackboard(
     blackboard: {
         key: string;
         value: number;
-        valueStr: string | null;
+        valueStr?: string | null;
     }[],
 ): string | null {
     // Note: check these every so often to see if their skills still display properly
@@ -30,7 +30,7 @@ export function insertBlackboard(
         blackboard: {
             key: string;
             value: number;
-            valueStr: string | null;
+            valueStr?: string | null;
         }[],
     ) => {
         // {tag} {tag:0} {tag:0%} {tag:0.0} {tag:0.0%}
