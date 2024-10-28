@@ -13,31 +13,33 @@ export const get = async (id: string): Promise<Operator | null> => {
             const promise = new Promise<void>(async (resolve) => {
                 const data = await getSkill(skill.skillId);
                 if (data) {
-                    Object.assign(skill.static ?? {}, {
-                        levels: data.levels.map((level) => ({
-                            name: level.name,
-                            rangeId: level.rangeId,
-                            description: level.description,
-                            skillType: level.skillType,
-                            duration: level.duration,
-                            spData: {
-                                spType: level.spData.spType,
-                                levelUpCost: level.spData.levelUpCost,
-                                maxChargeTime: level.spData.maxChargeTime,
-                                spCost: level.spData.spCost,
-                                initSp: level.spData.initSp,
-                                increment: level.spData.increment,
-                            },
-                            prefabId: level.prefabId,
-                            blackboard: level.blackboard.map((blackboard) => ({
-                                key: blackboard.key,
-                                value: blackboard.value,
-                                valueStr: blackboard.valueStr,
+                    Object.assign(skill, {
+                        static: {
+                            levels: data.levels.map((level) => ({
+                                name: level.name,
+                                rangeId: level.rangeId,
+                                description: level.description,
+                                skillType: level.skillType,
+                                duration: level.duration,
+                                spData: {
+                                    spType: level.spData.spType,
+                                    levelUpCost: level.spData.levelUpCost,
+                                    maxChargeTime: level.spData.maxChargeTime,
+                                    spCost: level.spData.spCost,
+                                    initSp: level.spData.initSp,
+                                    increment: level.spData.increment,
+                                },
+                                prefabId: level.prefabId,
+                                blackboard: level.blackboard.map((blackboard) => ({
+                                    key: blackboard.key,
+                                    value: blackboard.value,
+                                    valueStr: blackboard.valueStr,
+                                })),
                             })),
-                        })),
-                        skillId: data.skillId,
-                        iconId: data.iconId,
-                        hidden: data.hidden,
+                            skillId: data.skillId,
+                            iconId: data.iconId,
+                            hidden: data.hidden,
+                        },
                     });
                 }
 
@@ -62,31 +64,33 @@ export const getByName = async (name: string): Promise<Operator | null> => {
             const promise = new Promise<void>(async (resolve) => {
                 const data = await getSkill(skill.skillId);
                 if (data) {
-                    Object.assign(skill.static ?? {}, {
-                        levels: data.levels.map((level) => ({
-                            name: level.name,
-                            rangeId: level.rangeId,
-                            description: level.description,
-                            skillType: level.skillType,
-                            duration: level.duration,
-                            spData: {
-                                spType: level.spData.spType,
-                                levelUpCost: level.spData.levelUpCost,
-                                maxChargeTime: level.spData.maxChargeTime,
-                                spCost: level.spData.spCost,
-                                initSp: level.spData.initSp,
-                                increment: level.spData.increment,
-                            },
-                            prefabId: level.prefabId,
-                            blackboard: level.blackboard.map((blackboard) => ({
-                                key: blackboard.key,
-                                value: blackboard.value,
-                                valueStr: blackboard.valueStr,
+                    Object.assign(skill, {
+                        static: {
+                            levels: data.levels.map((level) => ({
+                                name: level.name,
+                                rangeId: level.rangeId,
+                                description: level.description,
+                                skillType: level.skillType,
+                                duration: level.duration,
+                                spData: {
+                                    spType: level.spData.spType,
+                                    levelUpCost: level.spData.levelUpCost,
+                                    maxChargeTime: level.spData.maxChargeTime,
+                                    spCost: level.spData.spCost,
+                                    initSp: level.spData.initSp,
+                                    increment: level.spData.increment,
+                                },
+                                prefabId: level.prefabId,
+                                blackboard: level.blackboard.map((blackboard) => ({
+                                    key: blackboard.key,
+                                    value: blackboard.value,
+                                    valueStr: blackboard.valueStr,
+                                })),
                             })),
-                        })),
-                        skillId: data.skillId,
-                        iconId: data.iconId,
-                        hidden: data.hidden,
+                            skillId: data.skillId,
+                            iconId: data.iconId,
+                            hidden: data.hidden,
+                        },
                     });
                 }
 

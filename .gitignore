@@ -173,6 +173,5 @@ bun.lockb
 tsconfig.tsbuildinfo
 database.json
 test.ts
-tsconfig.tsbuildinfo
 src/lib/impl/local/impl/data/*
 yarn.lock
