@@ -121,7 +121,7 @@ export default {
         const actionBuilder = new ActionRowBuilder().addComponents(approve, deny);
 
         try {
-            await (channel as TextChannel).send({ embeds: [challengeSubmission], components: [actionBuilder as ActionRowBuilder<any>], files: isVideo && clearFile ? [clearFile.attachment!] : [] });
+            await (channel as TextChannel).send({ embeds: [challengeSubmission], components: [actionBuilder as ActionRowBuilder<ButtonBuilder>], files: isVideo && clearFile ? [clearFile.attachment!] : [] });
         } catch {
             const embed = new EmbedBuilder().setDescription("The provided file is too large. You can upload it to YouTube, Imgur, etc. and use the `clear-link` option instead. **Max file size is ~50mb.**").setColor(colors.errorColor);
             return await interaction.editReply({ embeds: [embed] });

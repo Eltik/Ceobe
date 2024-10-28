@@ -147,7 +147,7 @@ export default {
         const submitButton = new ButtonBuilder().setCustomId(`submit-challenge:${createdChallenge.id}`).setLabel("Submit Challenge").setStyle(ButtonStyle.Success);
 
         const actionBuilder = new ActionRowBuilder().addComponents(submitButton);
-        await (channel as TextChannel).send({ components: [actionBuilder as ActionRowBuilder<any>] });
+        await (channel as TextChannel).send({ components: [actionBuilder as ActionRowBuilder<ButtonBuilder>] });
 
         await interaction.editReply({ embeds: [successEmbed] });
     },

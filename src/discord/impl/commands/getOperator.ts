@@ -1,10 +1,15 @@
-import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, SlashCommandBuilder } from "discord.js";
 import type { Interaction } from "discord.js";
 import type { Command } from "../../../types/impl/discord";
 import { search } from "../../../lib/impl/operators/impl/search";
 import { get } from "../../../lib/impl/operators/impl/get";
+import { get as getRange } from "../../../lib/impl/ranges/impl/get";
 import { colors } from "../..";
-import { OperatorRarity } from "../../../types/impl/lib/impl/operators";
+import { OperatorProfession } from "../../../types/impl/lib/impl/operators";
+import { insertBlackboard } from "../../../lib/impl/operators/impl/helper";
+import { removeStyleTags } from "../../../lib/impl/local/impl/helper";
+import { buildRangeField } from "../../../lib/impl/ranges/impl/helper";
+import { capitalize } from "../../../lib/impl/helper";
 
 export default {
     data: new SlashCommandBuilder()
@@ -23,60 +28,112 @@ export default {
             return await interaction.reply({ embeds: [embed], ephemeral: true });
         }
 
-        const skinImage =
-            operator.rarity === OperatorRarity.oneStar || operator.rarity === OperatorRarity.twoStar || operator.rarity === OperatorRarity.threeStar
-                ? `https://raw.githubusercontent.com/Aceship/Arknight-Images/main/characters/${encodeURIComponent(operator.id?.replaceAll("#", "_") ?? "")}_1.png`
-                : `https://raw.githubusercontent.com/Aceship/Arknight-Images/main/characters/${encodeURIComponent(operator.id?.replaceAll("#", "_") ?? "")}_2.png`;
-        const talents = Array.isArray(operator.talents)
-            ? operator.talents.map((talent) => `${Array.isArray(talent.candidates) ? talent.candidates.map((c) => `**${c.name}**: ${c.description.replace(/<[^>]*>/g, "").replace(/{[^}]*}/g, "")} - \`${c.unlockCondition?.phase} Lvl ${c.unlockCondition?.level}\``).join("\n") : "None"}`).join("\n")
-            : "None";
-        const skills = Array.isArray(operator.skills) && operator.skills.length > 0 ? operator.skills.map((skill) => `**${skill.static?.levels[0]?.name || "Unknown"}**: ${skill.static?.levels[0]?.description.replace(/<[^>]*>/g, "").replace(/{[^}]*}/g, "")}`).join("\n") : "None";
+        const avatarImage = `https://raw.githubusercontent.com/yuanyan3060/ArknightsGameResource/main/avatar/${operator.id}.png`;
+
+        const operatorClass =
+            operator.profession === OperatorProfession.CASTER
+                ? "Caster"
+                : operator.profession === OperatorProfession.MEDIC
+                  ? "Medic"
+                  : operator.profession === OperatorProfession.SNIPER
+                    ? "Sniper"
+                    : operator.profession === OperatorProfession.SUPPORTER
+                      ? "Supporter"
+                      : operator.profession === OperatorProfession.SPECIALIST
+                        ? "Specialist"
+                        : operator.profession === OperatorProfession.VANGUARD
+                          ? "Vanguard"
+                          : operator.profession === OperatorProfession.GUARD
+                            ? "Guard"
+                            : operator.profession === OperatorProfession.DEFENDER
+                              ? "Defender"
+                              : "N/A";
+
+        // Build the author field
+        /**
+         * @author All credit to https://github.com/Awedtan/HellaBot/
+         */
+        const urlName = operator.name.toLowerCase().split(" the ").join("-").split(/'|,/).join("").split(" ").join("-").split("ë").join("e").split("ł").join("l"); // Unholy dumbness
+        const authorField = { name: operator.name, iconURL: avatarImage, url: `https://gamepress.gg/arknights/operator/${urlName}` };
 
         const embed = new EmbedBuilder()
-            .setTitle(`${operator.name} ${operator.appellation && operator.appellation.length > 1 ? `(${operator.appellation})` : ""}`)
-            .setDescription(operator.description.replace(/<[^>]*>/g, "").replace(/{[^}]*}/g, ""))
-            .setColor(operator.isSpChar ? 0x9b59b6 : 0x3498db) // Purple for special chars, blue for others
-            .setThumbnail(`https://raw.githubusercontent.com/yuanyan3060/ArknightsGameResource/main/avatar/${operator.id}.png`) // Replace with real CDN path
-            .setImage(skinImage) // Replace with real CDN path
-            .addFields(
-                { name: "Profession", value: operator.profession ?? "", inline: true },
-                { name: "Position", value: `${operator.position ?? ""}`, inline: true },
-                { name: "Rarity", value: operator.rarity ?? "", inline: true },
-                { name: "Nation", value: operator.nationId ?? "", inline: true },
-                { name: "Group", value: operator.groupId ?? "N/A", inline: true },
-                { name: "Tags", value: Array.isArray(operator.tagList) ? operator.tagList.join(", ") : "None", inline: false },
-                {
-                    name: "Is Obtainable?",
-                    value: operator.isNotObtainable ? "No" : "Yes",
-                    inline: true,
-                },
-                {
-                    name: "Potential Items",
-                    value: `General: ${operator.canUseGeneralPotentialItem ? "✅" : "❌"}\n` + `Activity: ${operator.canUseActivityPotentialItem ? "✅" : "❌"}`,
-                    inline: true,
-                },
-                { name: "Max Potential Level", value: `${operator.maxPotentialLevel ?? ""}`, inline: true },
-                {
-                    name: "Talent Info",
-                    value: talents.length >= 1024 ? talents.substring(0, 1020) + "..." : talents,
-                    inline: false,
-                },
-                {
-                    name: "Phases",
-                    value: Array.isArray(operator.phases)
-                        ? operator.phases.map((phase) => `Max Level: \`${phase.maxLevel}\`\nElite Cost: ${Array.isArray(phase.evolveCost) && phase.evolveCost !== null ? phase.evolveCost.map((item) => `\`${item.count}x ${item.type}\``).join(", ") : "`N/A`"}`).join("\n\n")
-                        : "None",
-                    inline: false,
-                },
-                {
-                    name: "Skills",
-                    value: skills.length >= 1024 ? skills.substring(0, 1020) + "..." : skills,
-                    inline: false,
-                },
-            )
-            .setFooter({ text: `ID: ${operator.id || "N/A"} | Display Number: ${operator.displayNumber}` });
+            .setColor(colors.baseColor)
+            .setTitle(`${operator.name} ${"★".repeat(Number(operator.rarity))}`)
+            .setURL(authorField.url)
+            .setThumbnail(avatarImage);
 
-        await interaction.reply({ embeds: [embed] });
+        let description = removeStyleTags(operator.description);
+        if (operator.trait) {
+            const candidate = operator.trait.candidates[operator.trait.candidates.length - 1];
+            if (candidate.overrideDescripton) {
+                description = insertBlackboard(candidate.overrideDescripton, candidate.blackboard) ?? description;
+            }
+        }
+
+        if (description === "") description = "No description available.";
+
+        embed.addFields({ name: `${operatorClass} - ${capitalize(operator.subProfessionId)}`, value: description });
+
+        const rangeId = operator.phases?.[operator.phases.length - 1].rangeId;
+        if (rangeId) {
+            const range = await getRange(rangeId);
+            if (range) embed.addFields(buildRangeField(range));
+        }
+
+        if (operator.talents) {
+            for (const talent of operator.talents) {
+                if (talent.candidates) {
+                    const candidate = talent.candidates[talent.candidates.length - 1];
+                    if (candidate.name) {
+                        embed.addFields({ name: `*${candidate.name}*`, value: removeStyleTags(candidate.description) });
+                    }
+                }
+            }
+        }
+
+        if (operator.potentialRanks && operator.potentialRanks.length > 0) {
+            const potentialString = operator.potentialRanks.map((potential, index) => `${index} - ${potential.description}`).join("\n");
+            embed.addFields({ name: "Potentials", value: potentialString, inline: true });
+        }
+        if (operator.favorKeyFrames) {
+            const trustString = Object.entries(operator.favorKeyFrames[1].data)
+                .filter(([, bonus]) => bonus)
+                .map(([key, bonus]) => `${key.toUpperCase()} +${bonus}`)
+                .join("\n");
+            if (trustString !== "") {
+                embed.addFields({ name: "Trust Bonus", value: trustString, inline: true });
+            }
+        }
+
+        const maxStats = operator.phases[operator.phases.length - 1].attributesKeyFrames[operator.phases[operator.phases.length - 1].attributesKeyFrames.length - 1].data;
+        const hp = maxStats.maxHp.toString();
+        const atk = maxStats.atk.toString();
+        const def = maxStats.def.toString();
+        const res = maxStats.magicResistance.toString();
+        const dpCost = maxStats.cost.toString();
+        const block = maxStats.blockCnt.toString();
+        const redeploy = maxStats.respawnTime.toString();
+        const atkInterval = maxStats.baseAttackTime.toString();
+        embed.addFields(
+            { name: "\u200B", value: "**Max Stats**" },
+            { name: "❤️ HP", value: hp, inline: true },
+            { name: "⚔️ ATK", value: atk, inline: true },
+            { name: "🛡️ DEF", value: def, inline: true },
+            { name: "✨ RES", value: res, inline: true },
+            { name: "🏁 DP", value: dpCost, inline: true },
+            { name: "✋ Block", value: block, inline: true },
+            { name: "⌛ Redeploy Time", value: redeploy, inline: true },
+            { name: "⏱️ Attack Interval", value: atkInterval, inline: true },
+        );
+
+        const skillsButton = new ButtonBuilder().setCustomId(`get-operator:${operatorId}:skills`).setLabel("Skills").setStyle(ButtonStyle.Secondary);
+        const modulesButton = new ButtonBuilder().setCustomId(`get-operator:${operatorId}:modules`).setLabel("Modules").setStyle(ButtonStyle.Secondary);
+        const skins = new ButtonBuilder().setCustomId(`get-operator:${operatorId}:skins`).setLabel("Skins").setStyle(ButtonStyle.Secondary);
+        const cancelButton = new ButtonBuilder().setCustomId(`get-operator:${operatorId}:cancel`).setLabel("Cancel").setStyle(ButtonStyle.Danger);
+
+        const actionBuilder = new ActionRowBuilder().addComponents(skillsButton, modulesButton, skins, cancelButton);
+
+        await interaction.reply({ embeds: [embed], components: [actionBuilder as ActionRowBuilder<ButtonBuilder>] });
     },
     autocomplete: async (interaction: Interaction) => {
         if (interaction.isAutocomplete()) {

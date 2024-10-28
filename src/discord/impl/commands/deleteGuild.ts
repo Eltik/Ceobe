@@ -21,6 +21,6 @@ export default {
         const yes = new ButtonBuilder().setCustomId(`delete-guild:${interaction.user.id}`).setLabel("Delete").setStyle(ButtonStyle.Danger);
 
         const actionBuilder = new ActionRowBuilder().addComponents(yes);
-        return await interaction.reply({ embeds: [embed], components: [actionBuilder as ActionRowBuilder<any>], ephemeral: true });
+        return await interaction.reply({ embeds: [embed], components: [actionBuilder as ActionRowBuilder<ButtonBuilder>], ephemeral: true });
     },
 } as Command;

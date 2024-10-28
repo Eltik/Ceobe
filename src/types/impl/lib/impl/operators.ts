@@ -105,7 +105,7 @@ export type Operator = {
                 skillType: number;
                 duration: number;
                 spData: {
-                    spType: number;
+                    spType: string;
                     levelUpCost: [];
                     maxChargeTime: number;
                     spCost: number;
@@ -225,4 +225,5 @@ export enum OperatorProfession {
     SNIPER = "SNIPER",
     SPECIALIST = "SPECIAL",
     SUPPORTER = "SUPPORT",
+    DEFENDER = "TANK",
 }
