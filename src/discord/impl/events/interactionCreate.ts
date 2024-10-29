@@ -53,6 +53,21 @@ export default {
                 await button.default.execute(interaction);
                 break;
             }
+        } else if (interaction.isStringSelectMenu()) {
+            const { customId } = interaction;
+
+            const menus = readdirSync(join(import.meta.dir, "../menus")).filter((file) => file.endsWith(".ts") || file.endsWith(".js"));
+
+            for (const file of menus) {
+                const menu = await import(join(import.meta.dir, `../menus/${file}`));
+
+                if (!customId.startsWith(menu.default.id)) {
+                    continue;
+                }
+
+                await menu.default.execute(interaction);
+                break;
+            }
         }
     },
 } as Event;

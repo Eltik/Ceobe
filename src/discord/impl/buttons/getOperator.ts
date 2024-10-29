@@ -5,7 +5,6 @@ import { get as getRange } from "../../../lib/impl/ranges/impl/get";
 import { insertBlackboard } from "../../../lib/impl/operators/impl/helper";
 import { buildRangeField } from "../../../lib/impl/ranges/impl/helper";
 import { formatSkillType } from "../../../lib/impl/skills/impl/helper";
-import { getByCharId, getModuleDetails } from "../../../lib/impl/modules/impl/get";
 import { colors } from "../..";
 
 export default {
@@ -13,7 +12,7 @@ export default {
     execute: async (interaction: Interaction) => {
         if (!interaction.isButton()) return;
 
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferUpdate();
 
         const operatorId = interaction.customId.split(":")[1];
         const type = interaction.customId.split(":")[2];
@@ -56,50 +55,6 @@ export default {
                     newEmbeds.push(skillEmbed);
                 }
                 break;
-            case "modules":
-                const operatorModules = await getByCharId(operator?.id ?? "");
-                if (operatorModules.length === 0) {
-                    const embed = new EmbedBuilder().setDescription("No modules found.").setColor(colors.errorColor);
-                    newEmbeds.push(embed);
-                    break;
-                }
-
-                for (const module of operatorModules) {
-                    const moduleData = await getModuleDetails(module.uniEquipId);
-                    for (const phase of moduleData?.phases ?? []) {
-                        const embed = new EmbedBuilder().setTitle(`${module.typeIcon.toUpperCase()} ${module.uniEquipName} - Lv${phase.equipLevel}`).setThumbnail(module.image ?? "");
-
-                        let description = "",
-                            talentName = null,
-                            talentDescription = null;
-                        for (const part of phase.parts) {
-                            if (part.overrideTraitDataBundle.candidates) {
-                                const candidate = part.overrideTraitDataBundle.candidates[part.overrideTraitDataBundle.candidates.length - 1];
-                                if (candidate.additionalDescription) {
-                                    description += `${insertBlackboard(candidate.additionalDescription, candidate.blackboard)}\n`;
-                                }
-                                if (candidate.overrideDescripton) {
-                                    description += `${insertBlackboard(candidate.overrideDescripton, candidate.blackboard)}\n`;
-                                }
-                            }
-                            if (part.addOrOverrideTalentDataBundle.candidates) {
-                                const candidate = part.addOrOverrideTalentDataBundle.candidates[part.addOrOverrideTalentDataBundle.candidates.length - 1];
-                                talentName = candidate.name ?? talentName;
-                                talentDescription = insertBlackboard(candidate.upgradeDescription, candidate.blackboard) ?? talentDescription;
-                            }
-                        }
-                        embed.setDescription(description);
-                        if (talentName && talentDescription) {
-                            embed.addFields({ name: talentName, value: talentDescription });
-                        }
-
-                        const statDescription = phase.attributeBlackboard.map((attribute) => `${attribute.key.toUpperCase()} ${attribute.value > 0 ? "+" : ""}${attribute.value}`).join("\n");
-                        embed.addFields({ name: `Stats`, value: statDescription });
-
-                        newEmbeds.push(embed);
-                    }
-                }
-                break;
             case "skins":
                 //const skinImage =
                 //operator?.rarity === OperatorRarity.oneStar || operator?.rarity === OperatorRarity.twoStar || operator?.rarity === OperatorRarity.threeStar
@@ -112,8 +67,6 @@ export default {
                 break;
         }
 
-        await interaction.message.edit({ embeds: [...embeds, ...newEmbeds] });
-
-        return await interaction.editReply({ content: "Operator data updated." });
+        return await interaction.message.edit({ embeds: [...embeds, ...newEmbeds] });
     },
 } as Button;

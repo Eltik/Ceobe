@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, SlashCommandBuilder, StringSelectMenuBuilder, StringSelectMenuOptionBuilder } from "discord.js";
 import type { Interaction } from "discord.js";
 import type { Command } from "../../../types/impl/discord";
 import { search } from "../../../lib/impl/operators/impl/search";
@@ -127,14 +127,22 @@ export default {
         );
 
         const levelUpCost = new ButtonBuilder().setCustomId(`get-operator:${operatorId}:level-up-cost`).setLabel("Level-Up Cost").setStyle(ButtonStyle.Secondary);
+
+        const modulesButton = new StringSelectMenuBuilder()
+            .setCustomId(`get-operator:${operatorId}:modules`)
+            .setPlaceholder("Select a module level to view.")
+            .setMinValues(1)
+            .setMaxValues(1)
+            .addOptions(new StringSelectMenuOptionBuilder().setLabel("Level 1").setValue("1"), new StringSelectMenuOptionBuilder().setLabel("Level 2").setValue("2"), new StringSelectMenuOptionBuilder().setLabel("Level 3").setValue("3"));
+
         const skillsButton = new ButtonBuilder().setCustomId(`get-operator:${operatorId}:skills`).setLabel("Skills").setStyle(ButtonStyle.Secondary);
-        const modulesButton = new ButtonBuilder().setCustomId(`get-operator:${operatorId}:modules`).setLabel("Modules").setStyle(ButtonStyle.Secondary);
         const skinsButton = new ButtonBuilder().setCustomId(`get-operator:${operatorId}:skins`).setLabel("Skins").setStyle(ButtonStyle.Secondary);
         const cancelButton = new ButtonBuilder().setCustomId(`get-operator:${operatorId}:cancel`).setLabel("Cancel").setStyle(ButtonStyle.Danger);
 
-        const actionBuilder = new ActionRowBuilder().addComponents(levelUpCost, skillsButton, modulesButton, skinsButton, cancelButton);
+        const buttons = new ActionRowBuilder().addComponents(skillsButton, levelUpCost, skinsButton, cancelButton);
+        const selectMenus = new ActionRowBuilder().addComponents(modulesButton);
 
-        await interaction.reply({ embeds: [embed], components: [actionBuilder as ActionRowBuilder<ButtonBuilder>] });
+        await interaction.reply({ embeds: [embed], components: [buttons as ActionRowBuilder<ButtonBuilder>, selectMenus as ActionRowBuilder<StringSelectMenuBuilder>] });
     },
     autocomplete: async (interaction: Interaction) => {
         if (interaction.isAutocomplete()) {

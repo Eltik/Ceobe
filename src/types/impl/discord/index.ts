@@ -16,3 +16,8 @@ export type Button = {
     id: string;
     execute: (interaction: any) => Promise<void>;
 };
+
+export type Menu = {
+    id: string;
+    execute: (interaction: any) => Promise<void>;
+};
