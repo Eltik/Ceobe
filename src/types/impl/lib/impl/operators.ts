@@ -1,3 +1,5 @@
+import { Item, ItemType } from "./materials";
+
 export type Operator = {
     id?: string;
     name: string;
@@ -26,7 +28,7 @@ export type Operator = {
     trait: {
         candidates: {
             unlockCondition: {
-                phase: string;
+                phase: OperatorPhase;
                 level: number;
             };
             requiredPotentialRank: number;
@@ -76,7 +78,7 @@ export type Operator = {
             | {
                   id: string;
                   count: number;
-                  type: string;
+                  type: ItemType;
               }[]
             | null;
     }[];
@@ -86,7 +88,7 @@ export type Operator = {
         overrideTokenKey: string | null;
         levelUpCostCond: {
             unlockCond: {
-                phase: string;
+                phase: OperatorPhase;
                 level: number;
             };
             lvlUpTime: number;
@@ -125,7 +127,7 @@ export type Operator = {
     talents: {
         candidates: {
             unlockCondition: {
-                phase: string;
+                phase: OperatorPhase;
                 level: number;
             };
             requiredPotentialRank: number;
@@ -193,7 +195,7 @@ export type Operator = {
     }[];
     allSkillLevelUp: {
         unlockCond: {
-            phase: string;
+            phase: OperatorPhase;
             level: number;
         };
         lvlUpCost: {
@@ -207,6 +209,12 @@ export type Operator = {
 export enum OperatorPosition {
     RANGED = "RANGED",
     MELEE = "MELEE",
+}
+
+export enum OperatorPhase {
+    ELITE_0 = "PHASE_0",
+    ELITE_1 = "PHASE_1",
+    ELITE_2 = "PHASE_2",
 }
 
 export enum OperatorRarity {
@@ -228,3 +236,27 @@ export enum OperatorProfession {
     SUPPORTER = "SUPPORT",
     DEFENDER = "TANK",
 }
+
+export type LevelCost = {
+    level: number;
+    eliteCost: { quantity: number; material: Item }[];
+    elite: "E0" | "E1" | "E2";
+};
+export type LevelUpCost = LevelCost[];
+
+export type SkillCost = {
+    unlockCondition: {
+        phase: OperatorPhase;
+        level: number;
+    };
+    lvlUpTime: number;
+    skillCost: { quantity: number; material: Item }[];
+    level: "M1" | "M2" | "M3";
+};
+
+export type SkillLevelCost = {
+    skillId: string;
+    cost: SkillCost[];
+};
+
+export type SkillLevelUpCost = SkillLevelCost[];

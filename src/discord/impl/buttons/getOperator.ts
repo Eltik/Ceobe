@@ -2,11 +2,13 @@ import { EmbedBuilder, type Embed, type Interaction } from "discord.js";
 import type { Button } from "../../../types/impl/discord";
 import { get as getOperator } from "../../../lib/impl/operators/impl/get";
 import { get as getRange } from "../../../lib/impl/ranges/impl/get";
+import { get as getSkill } from "../../../lib/impl/skills/impl/get";
 import { getSkinsByCharacter as getSkins } from "../../../lib/impl/skins/impl/get";
 import { insertBlackboard } from "../../../lib/impl/operators/impl/helper";
 import { buildRangeField } from "../../../lib/impl/ranges/impl/helper";
 import { formatSkillType } from "../../../lib/impl/skills/impl/helper";
 import { colors } from "../..";
+import { calculateCost } from "../../../lib/impl/operators/impl/levelUpCost";
 
 export default {
     id: "get-operator",
@@ -27,6 +29,58 @@ export default {
 
         switch (type) {
             case "level-up-cost":
+                if (!operator) {
+                    const embed = new EmbedBuilder().setDescription("Operator not found.").setColor(colors.errorColor);
+                    newEmbeds.push(embed);
+                    break;
+                }
+
+                const cost = await calculateCost(operator);
+
+                const skillsEmbed = new EmbedBuilder().setColor(colors.baseColor).setTitle(`${operator.name} - Skill Level Up Cost`);
+                let skillDescription = "";
+                for (const skill of cost.skillCost) {
+                    const skillData = await getSkill(skill.skillId);
+
+                    skillDescription += `**${skillData?.levels[0].name}**\n`;
+
+                    for (const cost of skill.cost) {
+                        skillDescription += `\`${cost.level}\`:\`\`\`md\n`;
+                        skillDescription += cost.skillCost
+                            .map((material) => `- ${material.material.name}: ${material.quantity}`)
+                            .join("\n")
+                            .trim();
+                        skillDescription += `\`\`\`\n`;
+                    }
+
+                    skillDescription += "\n";
+                }
+
+                skillsEmbed.setDescription(skillDescription);
+
+                const eliteEmbed = new EmbedBuilder().setColor(colors.baseColor).setTitle(`${operator.name} - Elite Level Up Cost`);
+                let eliteDescription = "";
+                for (const elite of cost.eliteCost.reverse()) {
+                    eliteDescription += `**${elite.elite}**\n`;
+                    if (elite.eliteCost.length === 0) {
+                        eliteDescription += "No materials required.\n";
+                        continue;
+                    }
+
+                    eliteDescription += `\`\`\`md\n`;
+
+                    for (const cost of elite.eliteCost) {
+                        eliteDescription += `- ${cost.material.name}: ${cost.quantity}\n`;
+                    }
+
+                    eliteDescription += `\`\`\``;
+
+                    eliteDescription += "\n";
+                }
+
+                eliteEmbed.setDescription(eliteDescription);
+
+                newEmbeds.push(skillsEmbed, eliteEmbed);
                 break;
             case "skills":
                 if (operator?.skills.length === 0) {
@@ -80,10 +134,6 @@ export default {
                     newEmbeds.push(embed);
                     break;
                 }
-                //const skinImage =
-                //operator?.rarity === OperatorRarity.oneStar || operator?.rarity === OperatorRarity.twoStar || operator?.rarity === OperatorRarity.threeStar
-                //? `https://raw.githubusercontent.com/Aceship/Arknight-Images/main/characters/${encodeURIComponent(operator?.id?.replaceAll("#", "_") ?? "")}_1.png`
-                //: `https://raw.githubusercontent.com/Aceship/Arknight-Images/main/characters/${encodeURIComponent(operator?.id?.replaceAll("#", "_") ?? "")}_2.png`;
                 break;
             case "cancel":
                 break;
