@@ -21,7 +21,7 @@ export const getModuleDetails = async (id: string): Promise<ModuleData | null> =
 export const getAll = async (): Promise<Modules> => {
     const data = (await getMaterials(ExcelTables.UNIEQUIP_TABLE)) as Modules;
     for (const module in data.equipDict) {
-        Object.assign(module, { id: module, image: `https://raw.githubusercontent.com/${RESOURCE_REPOSITORY}/main/equip/icon/${encodeURIComponent(data.equipDict[module].uniEquipIcon)}` });
+        Object.assign(data.equipDict[module], { id: module, image: `https://raw.githubusercontent.com/${RESOURCE_REPOSITORY}/main/equip/icon/${encodeURIComponent(data.equipDict[module].uniEquipIcon)}.png` });
     }
     return data;
 };

@@ -44,12 +44,13 @@ export default {
 
                     const range = await getRange(staticSkill?.rangeId ?? "");
 
-                    const thumbnail = `https://raw.githubusercontent.com/yuanyan3060/ArknightsGameResource/main/skills/skill_icon_${skill?.static?.iconId ?? skill?.skillId}.png`;
-
-                    const skillEmbed = new EmbedBuilder().setColor("#2f3136").setTitle(`${staticSkill?.name}`).setThumbnail(thumbnail).setDescription(skillDescription);
+                    const skillEmbed = new EmbedBuilder().setColor("#2f3136").setTitle(`${staticSkill?.name}`).setDescription(skillDescription);
 
                     if (range) {
                         skillEmbed.addFields(buildRangeField(range));
+                    }
+                    if (skill.static?.image) {
+                        skillEmbed.setThumbnail(skill.static.image);
                     }
 
                     newEmbeds.push(skillEmbed);

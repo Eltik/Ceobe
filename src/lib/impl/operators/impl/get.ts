@@ -39,6 +39,7 @@ export const get = async (id: string): Promise<Operator | null> => {
                             skillId: data.skillId,
                             iconId: data.iconId,
                             hidden: data.hidden,
+                            image: data.image,
                         },
                     });
                 }
@@ -90,6 +91,7 @@ export const getByName = async (name: string): Promise<Operator | null> => {
                             skillId: data.skillId,
                             iconId: data.iconId,
                             hidden: data.hidden,
+                            image: data.image,
                         },
                     });
                 }

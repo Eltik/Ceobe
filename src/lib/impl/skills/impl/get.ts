@@ -1,3 +1,4 @@
+import { RESOURCE_REPOSITORY } from "..";
 import { ExcelTables } from "../../../../types/impl/lib/impl/local";
 import type { Skill } from "../../../../types/impl/lib/impl/skills";
 import { get as getSkills } from "../../local/impl/get";
@@ -13,6 +14,7 @@ export const getAll = async (): Promise<Skill[]> => {
     const skills = Object.entries(data).map(([id, data]) => ({
         id,
         ...data,
+        image: `https://raw.githubusercontent.com/${RESOURCE_REPOSITORY}/main/skill/skill_icon_${id}.png`,
     }));
     return skills;
 };

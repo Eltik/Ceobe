@@ -2,6 +2,7 @@ export type Skill = {
     id?: string;
     skillId: string;
     iconId: string | null;
+    image?: string;
     hidden: boolean;
     levels: {
         name: string;

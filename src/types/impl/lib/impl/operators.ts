@@ -118,6 +118,7 @@ export type Operator = {
             skillId: string;
             iconId: string | null;
             hidden: boolean;
+            image: string | null;
         };
     }[];
     displayTokenDict: null;
