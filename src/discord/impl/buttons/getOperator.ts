@@ -2,6 +2,7 @@ import { EmbedBuilder, type Embed, type Interaction } from "discord.js";
 import type { Button } from "../../../types/impl/discord";
 import { get as getOperator } from "../../../lib/impl/operators/impl/get";
 import { get as getRange } from "../../../lib/impl/ranges/impl/get";
+import { getSkinsByCharacter as getSkins } from "../../../lib/impl/skins/impl/get";
 import { insertBlackboard } from "../../../lib/impl/operators/impl/helper";
 import { buildRangeField } from "../../../lib/impl/ranges/impl/helper";
 import { formatSkillType } from "../../../lib/impl/skills/impl/helper";
@@ -57,6 +58,28 @@ export default {
                 }
                 break;
             case "skins":
+                const skins = await getSkins(operatorId);
+                for (const skin of skins) {
+                    const displaySkin = skin.displaySkin;
+
+                    const embed = new EmbedBuilder().setColor(colors.baseColor).setTitle(`${displaySkin.skinGroupName}${displaySkin.skinName ? ` - ${displaySkin.skinName}` : ""}`);
+
+                    if (skin.image) embed.setImage(skin.image);
+                    if (skin.eliteImage) embed.setThumbnail(skin.eliteImage);
+
+                    if (displaySkin.drawerList && displaySkin.drawerList.length > 0) {
+                        const artistString = displaySkin.drawerList.join("\n");
+                        embed.addFields({ name: displaySkin.drawerList.length > 1 ? "Artists" : "Artist", value: artistString });
+                    }
+
+                    newEmbeds.push(embed);
+                }
+
+                if (skins.length === 0) {
+                    const embed = new EmbedBuilder().setDescription("No skills found.").setColor(colors.errorColor);
+                    newEmbeds.push(embed);
+                    break;
+                }
                 //const skinImage =
                 //operator?.rarity === OperatorRarity.oneStar || operator?.rarity === OperatorRarity.twoStar || operator?.rarity === OperatorRarity.threeStar
                 //? `https://raw.githubusercontent.com/Aceship/Arknight-Images/main/characters/${encodeURIComponent(operator?.id?.replaceAll("#", "_") ?? "")}_1.png`
