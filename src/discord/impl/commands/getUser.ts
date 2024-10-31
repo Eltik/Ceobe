@@ -3,7 +3,7 @@ import type { Interaction } from "discord.js";
 import type { Command } from "../../../types/impl/discord";
 import { getByDiscordId as getUser } from "../../../database/impl/tables/users/impl/get";
 import { colors } from "../..";
-import { createCanvas, loadImage } from "@napi-rs/canvas";
+import { createCanvas, GlobalFonts, loadImage } from "@napi-rs/canvas";
 import type { SKRSContext2D } from "@napi-rs/canvas";
 import { ACESHIP_REPOSITORY } from "../../../lib/impl/operators";
 import { get as getOperator } from "../../../lib/impl/operators/impl/get";
@@ -50,6 +50,8 @@ export default {
             lines.push(line.trim());
             return lines;
         };
+
+        GlobalFonts.registerFromPath(join(import.meta.dir, "../fonts/Roboto.ttf"), "Roboto");
 
         // Create canvas and set dimensions
         const canvas = createCanvas(800, 400);
