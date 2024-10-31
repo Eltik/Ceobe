@@ -7,6 +7,8 @@ export const get = async (id: string): Promise<Operator | null> => {
     const operators = await getAll();
     const operator = operators.find((operator) => operator.id === id) ?? null;
 
+    if (!operator?.id?.startsWith("char")) return null;
+
     const skillPromise: Promise<void>[] = [];
     if (operator) {
         for (const skill of operator.skills) {
