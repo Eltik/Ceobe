@@ -51,7 +51,7 @@ export default {
             return lines;
         };
 
-        GlobalFonts.registerFromPath(join(import.meta.dir, "../fonts/Roboto.ttf"), "Roboto");
+        GlobalFonts.registerFromPath(join(import.meta.dir, "./fonts/Roboto.ttf"), "Roboto");
 
         // Create canvas and set dimensions
         const canvas = createCanvas(800, 400);
