@@ -57,22 +57,26 @@ export default {
             const embed = new EmbedBuilder()
                 .setTitle(`Leaderboard - ${(type.charAt(0).toUpperCase() + type.slice(1)).replaceAll("_", " ")}`)
                 .setColor(colors.baseColor)
-                .setFooter({ text: `Page ${page + 1}` })
+                .setFooter({ text: `Page ${page}` })
                 .setTimestamp();
 
             let description = "```";
 
-            for (let i = 0; i < data.length; i++) {
+            for (let i = 0; i <= 10; i++) {
+                if (!data[i]) break;
+
                 const user = await interaction.client.users.fetch(data[i].user_id);
+                const p = i + 1 + 10 * (page - 1);
+
                 switch (type) {
                     case "level":
-                        description += `${(i + 1).toString().padEnd(3, " ")}${user.username.toString().padEnd(17, " ")} ${Math.round(data[i].level).toString().padEnd(4, " ")}\n`;
+                        description += `${p.toString().padEnd(3, " ")}${user.username.toString().padEnd(17, " ")} ${Math.round(data[i].level).toString().padEnd(4, " ")}\n`;
                         break;
                     case "exp":
-                        description += `${(i + 1).toString().padEnd(3, " ")}${user.username.toString().padEnd(17, " ")} ${Math.round(data[i].exp).toString().padEnd(4, " ")}\n`;
+                        description += `${p.toString().padEnd(3, " ")}${user.username.toString().padEnd(17, " ")} ${Math.round(data[i].exp).toString().padEnd(4, " ")}\n`;
                         break;
                     case "submitted_challenges":
-                        description += `${(i + 1).toString().padEnd(3, " ")}${user.username.toString().padEnd(17, " ")} ${data[i].submitted_challenges.length.toString().padEnd(4, " ")}\n`;
+                        description += `${p.toString().padEnd(3, " ")}${user.username.toString().padEnd(17, " ")} ${data[i].submitted_challenges.length.toString().padEnd(4, " ")}\n`;
                         break;
                     default:
                         break;
@@ -99,7 +103,7 @@ export default {
             console.error(e);
 
             const embed = new EmbedBuilder().setDescription("An error occurred while processing the request.").setColor(colors.errorColor);
-            return await interaction.reply({ embeds: [embed], ephemeral: true });
+            return await interaction.editReply({ embeds: [embed] });
         }
     },
 } as Command;
