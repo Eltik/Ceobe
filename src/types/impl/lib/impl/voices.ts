@@ -8,6 +8,9 @@ export enum Languages {
     EN = "en",
     JP = "jp",
     KR = "kr",
+    GER = "ger",
+    ITA = "ita",
+    RUS = "rus",
 }
 
 export type CharacterWords = {
